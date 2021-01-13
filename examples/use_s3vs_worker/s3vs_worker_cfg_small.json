@@ -1,0 +1,54 @@
+{
+    "model": "../../data/synthetic-tests/sphere/data/sphere_N-1e5_t-1_D-7_d-3/sphere_N-1e5_t-1_D-7_d-3.bin",
+    "viewport": {
+        "x": 640,
+        "y": 480
+    },
+    "scene": {
+        "camera": {
+            "eye": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": 5.0
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "up": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0
+            }
+        },
+        "field": 0,
+        "frame": 0,
+        "threshold": 0.5,
+        "colorTransferFunc": {
+            "0":   { "x": 1.0, "y": 0.0, "z": 1.0, "w": 1.0 },
+            "0.2": { "x": 0.0, "y": 0.0, "z": 1.0, "w": 1.0 },
+            "0.4": { "x": 0.0, "y": 1.0, "z": 1.0, "w": 1.0 },
+            "0.6": { "x": 0.0, "y": 1.0, "z": 0.0, "w": 1.0 },
+            "0.8": { "x": 1.0, "y": 1.0, "z": 0.0, "w": 1.0 },
+            "1":   { "x": 1.0, "y": 0.0, "z": 0.0, "w": 1.0 }
+        }
+    },
+    "blocks": {
+        "level": 1,
+        "indexBox": {
+            "min": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "max": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            }
+        }
+    },
+    "opacity": 1,
+    "output": "../../data/synthetic-tests/sphere/data/use_s3vs_worker_output_small.png"
+}

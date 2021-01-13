@@ -1,0 +1,27 @@
+:root {
+    --separator-color: rgb(214, 214, 214);
+    --separator-thickness: 2px;
+    --separator-shadow: box-shadow: 0px 0px 3px 0px;
+}
+
+.vertical-separator, .horizontal-separator {
+    display: flex;
+    background-color: var(--separator-color);
+    box-shadow: var(--separator-shadow);
+    margin: 5px;
+    flex-shrink: 0;
+}
+
+.vertical-separator {
+    width: var(--separator-thickness);
+    height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.horizontal-separator {
+    width: 100%;
+    height: var(--separator-thickness);
+    margin-left: 0;
+    margin-right: 0;
+}

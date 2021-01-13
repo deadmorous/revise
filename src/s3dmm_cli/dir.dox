@@ -1,0 +1,10 @@
+/**
+\defgroup s3dmm_cli s3dmm command line application
+@{
+
+\dir src/s3dmm_cli s3dmm command line application source directory
+
+The application implements data preprocessing according to the s3dmm technology. It relies on \ref s3dmm.
+
+@}
+*/

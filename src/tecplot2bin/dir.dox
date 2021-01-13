@@ -1,0 +1,17 @@
+/**
+\defgroup tecplot2bin Utility to convert files from tecplot to a binary format
+@{
+
+\dir src/tecplot2bin tecplot-to-binary converter source directory
+
+The binary format produced by this utility is far more efficient to use for s3dmm data preprocessing,
+therefore it should be preferred. When a numerical solution of a problem is available in the tecplot format,
+it is recommended to convert it the binary format using this utility. After that, the binary file
+is passed to s3dmm preprocessor in place of the original tecplot file.
+
+\note
+Use the <tt>.bin</tt> filename suffix for binary files and the <tt>.tec</tt> suffix for tecplot files.
+The s3dmm reader relies on the filename suffix to guess file format.
+
+@}
+*/

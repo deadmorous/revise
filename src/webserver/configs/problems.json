@@ -1,0 +1,36 @@
+{
+    "problems": [
+        {
+            "name": "Sphere 10K D7 L2",
+            "path": "../../data/synthetic-tests/data/sphere_N1e4_t1_D7_br1_L2/sphere.bin"
+        },
+        {
+            "name": "Sphere 100K x 10 D7 L2",
+            "path": "../../data/synthetic-tests/data/sphere_N1e5_t10_D7_br1_L2.bin"
+        },
+        {
+            "name": "Sphere 10M D8 L2",
+            "path": "../../data/synthetic-tests/data/sphere_N1e7_t1_D8_br1_L2/sphere.bin"
+        },
+        {
+            "name": "Sphere 10M D8 L1 br3",
+            "path": "../../data/synthetic-tests/data/sphere_N1e7_t1_D8_br3_L1/sphere.bin"
+        },
+        {
+            "name": "Cube 1K D5 L2",
+            "path": "../../data/synthetic-tests/data/cube_N1e3_t1_D5_br1_L2/cube.bin"
+        },
+        {
+            "name": "Cube 10M x 10 D8 L2",
+            "path": "../../data/synthetic-tests/data/cube_N1e7_t10_D8_br1_L2.bin"
+        },
+        {
+            "name": "MWave 17M x 10 D8 L0",
+            "path": "../../data/synthetic-tests/data/mwave_c256_t10_D8_L0.coleso"
+        },
+        {
+            "name": "MWave 135M D8 L1",
+            "path": "../../data/synthetic-tests/data/mwave_c512_t1_D8_L1/data.coleso"
+        }
+    ]
+}

@@ -1,0 +1,93 @@
+/* Common */
+#ctf-dialog {
+    display: flex;
+    flex-direction: column;
+}
+
+#ctf-dialog > * {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    
+    padding: 5px;
+    margin: 4px;
+
+    border: #585858 1px solid;
+    border-radius: 10px;
+}
+
+/* Opacity section */
+#ctf-opacity-canvas {
+    width: 250px;
+    height: 130px;
+}
+
+#ctf-opacity-options {
+    display: flex;
+    flex-direction: column;
+}
+
+#ctf-opacity-buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+#ctf-opacity-inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Colormap section */
+#ctf-colormap-canvas {
+    width: 250px;
+    height: 100px;
+}
+
+#ctf-colormap-options {
+    display: flex;
+    flex-direction: column;
+}
+
+#ctf-colormap-buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+#ctf-colormap-inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Buttons */
+#ctf-opacity-remove-btn, #ctf-colormap-remove-btn {
+    background-image: url("/images/remove.png");
+}
+
+#ctf-opacity-setDefault-btn, #ctf-colormap-setDefault-btn {
+    background-image: url("/images/reset.png");
+}
+
+#ctf-dialog button {
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* inputs */
+#ctf-dialog input {
+    width: 70px;
+    margin: 0;
+}
+
+#ctf-colormap-color-input {
+    border-color: black;
+    border-width: 0.5px;
+    outline: none;
+}
+
+#ctf-opacity-inputs > div, #ctf-colormap-inputs > div {
+    justify-content: space-between;
+}
+
+div[class="color-picker:a"] {
+    display: none;
+}

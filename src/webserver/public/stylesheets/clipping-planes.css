@@ -1,0 +1,71 @@
+#clipping-planes-UI {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+}
+
+#clipping-planes-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: scroll;
+    border: 1px solid black;
+    padding: 5px;
+    height: 300px;
+    flex-grow: 1;
+    width: 200px;
+}
+
+#clipping-planes-list label {
+    width: 150px;
+    background-color: rgb(223, 223, 223);
+    text-align: center;
+    align-self: stretch;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#clipping-planes-list>.row-oriented {
+    border: 1px solid gray;
+    outline: none;
+    flex-grow: 0;
+}
+  
+#clipping-planes-list>.row-oriented:hover {
+    box-shadow: 0 0 5px -1px green;
+}
+
+
+
+
+
+#clipping-planes-list>button {
+    padding-left: 0;
+    background-color: white;
+}
+
+.logo {
+    height: 35px!important;
+    width: 35px;
+    background-position: center;
+    background-size: cover;
+    border-right: 1px solid black;
+}
+
+.plane-points>.logo {
+    background-image: url('/images/by-points.svg');
+}
+
+.plane-pos-normal>.logo {
+    background-image: url('/images/pos-normal.svg');
+}
+
+
+.plane-name{
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+}
+

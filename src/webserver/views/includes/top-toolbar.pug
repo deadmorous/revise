@@ -1,0 +1,50 @@
+#topToolbar.row-oriented
+    select#problem-select.bright-select(name='problem-select')
+        option(value="none" selected) Choose problem
+
+    .vertical-separator
+
+    select#primary-field-select.bright-select(name="primary-field")
+
+    .vertical-separator
+
+    button#restore-btn.ordinary-btn(title="Restore previous session")
+
+    .vertical-separator
+
+    .column-oriented
+        .row-oriented
+            .column-oriented.align-items-center
+                label(style='padding-bottom: 0') Time:
+                +number-input("Time", "time")
+            .row-oriented
+                button(disabled)#to-begin-btn.ordinary-btn.player-btn
+                button(disabled)#previous-btn.ordinary-btn.player-btn
+                button(disabled)#play-pause-btn.ordinary-btn.play.player-btn
+                button(disabled)#next-btn.ordinary-btn.player-btn
+                button(disabled)#to-end-btn.ordinary-btn.player-btn
+        input#timeline(type="range")        
+    
+    .vertical-separator
+
+    button#z-pos.ordinary-btn
+    button#z-neg.ordinary-btn
+    button#y-pos.ordinary-btn
+    button#y-neg.ordinary-btn
+    button#x-pos.ordinary-btn
+    button#x-neg.ordinary-btn
+    button#rot-clockwise.ordinary-btn
+    button#rot-counterclockwise.ordinary-btn
+
+    .vertical-separator
+
+    button#ctf-dialog-raise-btn.ordinary-btn(title="Colormap Settings")
+
+    .vertical-separator
+
+    .stretch
+
+    button#share-resource-btn.tool
+    button#settings-btn.tool
+    button#login-logout.tool.logout
+    

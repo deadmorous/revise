@@ -1,0 +1,25 @@
+{
+    "problemId": "Coaxial",
+    "parameterFileName": "../../../dist/lib/ColESo/PARAMS/es_coaxial_2.txt",
+    "outputDirectory": "data/Coaxial_2",
+    "domain": {
+        "min": {
+            "x": -110,
+            "y": -110,
+            "z": -110
+        },
+        "max": {
+            "x": 110,
+            "y": 110,
+            "z": 110
+        }
+    },
+    "cell_count": {
+        "x": 128,
+        "y": 128,
+        "z": 128
+    },
+    "init_time": 0,
+    "time_step": 0.1,
+    "time_step_count": 100
+}

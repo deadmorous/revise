@@ -1,0 +1,48 @@
+select {
+    border-width: 0;
+    outline: none;
+    text-align-last: center;
+    text-align: center;
+    -moz-appearance: none;
+}
+
+.bright-select {
+    background-color: rgb(119, 206, 142);
+    border-radius: 10px / 10px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.bright-select:hover {
+    box-shadow: 0 0 5px -1px ;
+}
+
+.bright-select:active {
+    box-shadow: inset 0 0 5px -1px ;
+}
+
+.bright-select > option {
+    background-color: rgb(193, 255, 191);
+}
+
+
+
+
+.normal-select {
+    background-color: rgb(196, 196, 196);
+    border-radius: 10px / 10px;
+    margin: 10px;
+    padding: 5px;
+}
+
+.normal-select:hover {
+    box-shadow: 0 0 4px -1px ;
+}
+
+.normal-select:active {
+    box-shadow: inset 0 0 4px -1px ;
+}
+
+.normal-select > option {
+    background-color: rgb(230, 230, 230);
+}

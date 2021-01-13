@@ -1,0 +1,24 @@
+{
+    "problemId": "MultiscaleWaves",
+    "outputDirectory": "data/mwave",
+    "domain": {
+        "min": {
+            "x": -1,
+            "y": -1,
+            "z": 0.05
+        },
+        "max": {
+            "x": 1,
+            "y": 1,
+            "z": 2.05
+        }
+    },
+    "cell_count": {
+        "x": 256,
+        "y": 256,
+        "z": 256
+    },
+    "init_time": 0,
+    "time_step": 0.02,
+    "time_step_count": 10
+}

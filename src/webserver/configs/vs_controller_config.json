@@ -1,0 +1,12 @@
+{
+    "computingCaps": {
+        "compNodeCount": 1,
+        "GPUPerNodeCount": 1,
+        "CPUPerNodeCount": 1,
+        "workerThreadPerNodeCount": 1
+    },
+    "controllerOpts": {
+        "measureRenderingTime": true
+    }
+}
+

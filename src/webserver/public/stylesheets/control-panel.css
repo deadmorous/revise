@@ -1,0 +1,25 @@
+#control-panel {
+    overflow-y: scroll;
+    flex-grow: 1;
+}
+
+#control-panel *.row-oriented {
+    flex-grow: 1;
+}
+
+.dialog-buttons-container {
+    justify-content: center;
+}
+
+#controlPanel > div > * {
+    margin: 5px;
+}
+
+#clip-normal-origin {
+    display: flex;
+    align-self: stretch;
+}
+
+input[name="threshold"] {
+    width: 40px;
+}

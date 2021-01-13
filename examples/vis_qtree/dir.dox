@@ -1,0 +1,10 @@
+/**
+\defgroup vis_qtree Command line application for visualization of 2D s3dmm quadtrees resulting from data preprocessing
+@{
+
+\dir src/vis_qtree Quadtree visualizer source directory
+
+The application is designed mostly to fit debugging and presentation needs.
+
+@}
+*/

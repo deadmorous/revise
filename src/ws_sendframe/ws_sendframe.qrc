@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/ws_sendframe">
+        <file alias="source_na.png">res/source_na.png</file>
+    </qresource>
+</RCC>

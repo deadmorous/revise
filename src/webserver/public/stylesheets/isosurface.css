@@ -1,0 +1,30 @@
+#multiple-fields-control button {
+    margin: 5px 0px;
+}
+
+#field-values-table {
+    display: flex;
+    align-items: center;
+    height: 150px;
+    width: 130px;
+    overflow-y: scroll;
+    border: 1px solid gray;
+    margin: 5px 15px;
+}
+
+#field-values-table input[type=text] {
+    display: flex;
+    outline: none;
+    box-shadow: none;
+    border: 1px solid gray;
+    width: 100px;
+}
+
+#single-isosurface-control {
+    display: flex;
+    align-self: stretch;
+}
+
+#single-isosurface-control div {
+    flex-grow: 1;
+}

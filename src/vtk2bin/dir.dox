@@ -1,0 +1,14 @@
+/**
+\defgroup vtk2bin Utility to convert files from vtk to a binary format
+@{
+
+\dir src/vtk2bin vtk-to-binary converter source directory
+
+TODO
+
+\note
+Use the <tt>.vbin</tt> filename suffix for binary files and the <tt>.vtk</tt> suffix for tecplot files.
+The s3dmm reader relies on the filename suffix to guess file format.
+
+@}
+*/

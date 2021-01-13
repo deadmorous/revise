@@ -1,0 +1,29 @@
+doctype html
+html
+
+	head
+		title ReVisE
+		include ./includes/stylesheets.pug
+
+	body
+		mixin number-input(caption,name)
+			.number-input(placeholder=caption name=name)
+
+		include ./includes/top-toolbar.pug
+
+		.horizontal-separator
+
+		.row-oriented.occupy-all.overflow-auto(style="justify-content: flex-start")
+			include ./includes/side-toolbar.pug
+			.vertical-separator
+
+			#viewport
+				canvas Failed to load canvas
+
+		include ./includes/clip-dialog.pug
+		include ./includes/settings-dialog.pug
+		include ./includes/isosurface-range-dialog.pug
+		include ./includes/color-transfer-function-dialog.pug
+		include ./includes/sharing-resource-link.pug
+
+		include ./includes/scripts.pug

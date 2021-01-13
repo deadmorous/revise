@@ -1,0 +1,26 @@
+#side.column-oriented
+    button#clip-btn.tool Clipping Planes
+
+    .horizontal-separator
+
+    h Visualization mode
+    select#vis-mode-select.bright-select(name="mode-select")
+        option#Isosurface-option(name="Isosurface" value="Isosurface" selected) Isosurface
+        option#MIP-option(name="MaxIntensityProjection" value="MIP") MIP
+        option#Argb-option(name="Argb" value="Argb") Argb
+        option#ArgbLight-option(name="ArgbLight" value="ArgbLight") Argb + Light
+        option#DomainVoxels-option(name="DomainVoxels" value="DomainVoxels") Domain voxels
+
+    .horizontal-separator
+
+    #control-panel
+        include ./isosurface-control.pug
+        include ./clip-control.pug
+        include ./MIP-control.pug
+        include ./domain-voxels-control.pug
+        include ./argb-control.pug
+        include ./argb-light-control.pug
+
+    .stretch
+        
+    textarea#measureOutput(rows=10 cols=35)

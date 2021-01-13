@@ -1,0 +1,28 @@
+{
+    "model": "../../data/synthetic-tests/sphere/data/sphere_N-1e5_t-1_D-7_d-3/sphere_N-1e5_t-1_D-7_d-3.bin",
+    "viewport": {
+        "x": 1000,
+        "y": 800
+    },
+    "scene": {
+        "camera": {
+            "eye": {
+                "x": 0.0,
+                "y": 10.0,
+                "z": 35.0
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "up": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0
+            }
+        },
+        "field": 0,
+        "frame": 0
+    }
+}

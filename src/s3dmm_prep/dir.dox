@@ -1,0 +1,13 @@
+/**
+\defgroup s3dmm_prep s3dmm data preprocessor
+@{
+
+\dir src/s3dmm_prep s3dmm data preprocessor source directory
+
+The application implements data preprocessing according to the s3dmm technology. It is planned to supersede s3dmm_cli in the future.
+s3dmm_prep relies on \ref s3dmm.
+
+\note Currently the project serves as a sandbox for playing with s3dmm algorithms.
+
+@}
+*/

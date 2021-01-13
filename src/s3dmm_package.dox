@@ -1,0 +1,27 @@
+/**
+\mainpage s3dmm package
+
+The s3dmm package is a set of components to visualize data on large meshes.
+
+The package consists of the the following modules.
+
+- Basic s3dmm-aware components
+  - \ref s3dmm
+  - \ref s3dmm_cli
+  - \ref s3dmm_gui
+  - \ref s3dmm_ren
+  .
+- Data readers
+  - \ref tecplot_rw
+  .
+- Auxiliary data generators and processors
+  - \ref tecplot_gen
+  - \ref tecplot2bin
+  .
+- Visualizers helping to better understand how s3dmm works/fails
+  - \ref qtree_gui
+  - \ref vis_otree
+  - \ref vis_qtree
+.
+
+*/

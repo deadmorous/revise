@@ -1,0 +1,15 @@
+/**
+\defgroup s3dmm_gui s3dmm GUI application
+@{
+
+\dir src/s3dmm_gui s3dmm GUI application source directory
+
+On the one hand, the application demonstrates how the s3dmm technology implemented in \ref s3dmm "s3dmm" can be used
+to visualize data. On the other hand, it demonstrates how the <a href=https://github.com/MicBosi/visualizationlibrary>Visualization library</a>
+can be used for the same purpose. Notice that a number of shaders have been copy-pasted from the visualization library, and then edited to fit
+the specific needs of s3dmm data visualization.
+
+The application is not intended to be further developed and turned into a visualization server.
+
+@}
+*/

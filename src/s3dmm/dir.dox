@@ -1,0 +1,10 @@
+/**
+\defgroup s3dmm s3dmm core library
+@{
+
+\dir src/s3dmm s3dmm core library source directory
+
+The library provides basic functionality implementing the s3dmm technology. It is mostly header only.
+
+@}
+*/

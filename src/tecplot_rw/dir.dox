@@ -1,0 +1,10 @@
+/**
+\defgroup tecplot_rw Library for reading (and writing?) of tecplot data files
+@{
+
+\dir src/tecplot_rw Tecplot read/write library source directory
+
+TODO AK: More docs here.
+
+@}
+*/

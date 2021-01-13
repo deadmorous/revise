@@ -1,0 +1,30 @@
+#settings-dialog.dialog.hidden.align-items-center.column-oriented.align-items-end.hidden
+    
+    mixin input(caption, id)
+        .row-oriented
+            label #{caption}
+            div(id=id)
+    
+    +input("fovY", "fovY")
+    +input("Render Patience, ms", "renderPatience")
+    +input("Render Quality", "renderQuality")
+
+    .row-oriented
+        label Field are shown as
+        .column-oriented.align-self-center
+            .row-oriented
+                input(type="radio" name="field-values-mode" value="relative")
+                label Relative values
+            .row-oriented
+                input(type="radio" name="field-values-mode" value="absolute" checked)
+                label Absolute values
+
+    .row-oriented
+        label Time interval, ms
+        .number-input(name="animation-time-step")
+
+    .row-oriented
+        label Background Color
+        input#background-color-input(type="text")
+    
+

@@ -1,0 +1,10 @@
+/**
+\defgroup vis_otree Gui application for visualization of 3D s3dmm octrees resulting from data preprocessing
+@{
+
+\dir src/vis_otree Octree visualizer source directory
+
+The application is designed mostly to fit debugging and presentation needs.
+
+@}
+*/

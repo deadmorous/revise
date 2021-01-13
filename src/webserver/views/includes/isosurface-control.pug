@@ -1,0 +1,29 @@
+#isosurface-control.column-oriented.field-mode-control.align-items-center.hidden
+    h Isosurface mode
+    .row-oriented
+        label Levels number:
+        select#isosurfaces-number
+            option(value="single" selected) Single
+            option(value="multiple") Multiple
+
+    #single-isosurface-control
+        .number-input(placeholder="Field value" name="primaryFieldValue")
+
+    #multiple-fields-control.row-oriented
+        #field-values-table.column-oriented.scrollable
+        .column-oriented
+            button#add-isosurface-btn.setting-btn Add
+            button#remove-isosurface-btn.setting-btn Remove
+            button#range-isosurface-btn.setting-btn Range
+            button#clear-isosurfaces-btn.setting-btn Clear
+    
+    +number-input("Isosurface Opacity","opacity")
+
+    h Secondary field
+
+    .row-oriented.align-items-center
+        select#secondary-field-select.normal-select(name="secondary-field-select")
+            option(value='none' selected) Not chosen
+                
+    .row-oriented
+        button.dialog-btn(value="Ok") Ok

@@ -1,0 +1,14 @@
+/**
+\defgroup s3dmm_ren s3dmm off-screen rendering demo
+@{
+
+\dir src/s3dmm_ren s3dmm off-screen rendering demo source directory
+
+The application demonstrates how the rendering of s3dmm data could be implemented on a visualization server.
+It employs an off-screen rendering technique to generate a number of frames; those frames are written to png images.
+
+The visualization server (to be done soon) would use the same API for setting up the off-screen rendering; the frames
+are to be utilized in a completely different way.
+
+@}
+*/

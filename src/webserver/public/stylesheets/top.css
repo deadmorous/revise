@@ -1,0 +1,78 @@
+#rot-clockwise {
+    background-image: url("/images/rotate-clockwise.svg");
+}
+#rot-counterclockwise {
+    background-image: url("/images/rotate-counterclockwise.svg");
+}
+#x-pos {
+    background-image: url("/images/x-pos.png");
+}
+#x-neg {
+    background-image: url("/images/x-neg.png");
+}
+#y-pos {
+    background-image: url("/images/y-pos.png");
+}
+#y-neg {
+    background-image: url("/images/y-neg.png");
+}
+#z-pos {
+    background-image: url("/images/z-pos.png");
+}
+#z-neg {
+    background-image: url("/images/z-neg.png");
+}
+#settings-btn {
+    background-image: url("/images/settings.svg");
+}
+#share-resource-btn {
+    background-image: url("/images/share-screen.svg");
+}
+
+#ctf-dialog-raise-btn {
+    background-image: url("/images/color-palette.png");
+}
+
+#restore-btn {
+    background-image: url("/images/restore-page.png");
+}
+
+.logout {
+    background-image: url("/images/logout.svg");
+}
+
+.login {
+    background-image: url("/images/login.svg");
+}
+
+#login-logout, #settings-btn, #share-resource-btn {
+    background-repeat: no-repeat;
+    background-size: 30px;
+    background-position: center;
+
+    height: 40px;
+    width: 40px;
+    border-radius: 8px;
+}
+
+.ordinary-btn {
+    height: 35px;
+    width: 35px;
+    background-size: 25px;
+    border-radius: 3px;
+}
+
+.ordinary-btn, #settings-btn {
+    background-position: center;
+
+    border: 1px solid gray;
+
+    background-color: white;
+    background-repeat: no-repeat;
+    
+    margin: 2px;
+}
+
+.ordinary-btn[disabled] {
+    background-color: rgb(226, 226, 226);
+}

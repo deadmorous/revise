@@ -1,0 +1,11 @@
+/**
+\defgroup qtree_gui Gui application for visualization of 2D data, including original datasets and s3dmm
+@{
+
+\dir src/qtree_gui Gui application for visualization of 2D data source directory
+
+The application is intended to help s3dmm developers better understand what is going on during the s3dmm preprocessing,
+and what the preprocessed data looks like. So the application is designed mostly to fit debugging needs.
+
+@}
+*/

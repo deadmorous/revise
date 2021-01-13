@@ -1,0 +1,23 @@
+# good
+http://localhost:3000/vs/input/get?root=viewportSize
+http://localhost:3000/vs/input/set?root=viewportSize&value=[320,200]
+http://localhost:3000/vs/input/set?root=clippingPlanes&value=[{"pos":[1,2,3],"normal":[0.1,0,1]}]
+
+
+
+# bad
+
+# missing required property 'pos'
+http://localhost:3000/vs/input/set?root=clippingPlanes&value=[{"zpos":[1,2,3],"normal":[0.1,0,1]}]
+
+
+
+# seems good, but really bad
+
+# Nested properties of clippingPlanes cannot be set separately.
+# The same applies to many other properties
+http://localhost:3000/vs/input/set?root=clippingPlanes[0].pos&value=[1,2,3]
+
+# Nested properties of viewportSize cannot be set separately.
+http://localhost:3000/vs/input/set?root=viewportSize[0]&value=123
+

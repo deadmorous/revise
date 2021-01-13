@@ -1,0 +1,54 @@
+.ui-dialog {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+}
+.ui-dialog-titlebar {
+	display: flex;
+	flex-direction: row;
+}
+.ui-dialog-title {
+	display: flex;
+	flex-grow: 1;
+	justify-content: center;
+	align-items: center;
+}
+.ui-dialog-buttonpane {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+
+.ui-dialog, .ui-dialog:focus {
+	border: 1px solid gray;
+	padding-bottom: 5px;
+	border-radius: 10px;
+	outline: none;
+	background-color: rgb(119, 206, 142);
+}
+
+.ui-dialog-titlebar {
+	background-color: rgb(201, 201, 201);
+	padding: 5px;
+	border-radius: 10px 10px 0px 0px;
+	border-bottom: 1px solid black;
+}
+
+.ui-dialog-titlebar-close {
+	width: 25px;
+	height: 25px;
+
+	background-image: url("/images/close.svg");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 18px;
+	background-color: white;
+
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.ui-dialog-content {
+	padding: 10px;
+}

@@ -1,0 +1,24 @@
+Visualization Library v2.0.0-β2 [f32]
+May  7 2020 - 13:06:27 - GCC compiler [RELEASE] [x64]
+
+ --- Environment ---
+VL_LOGFILE_PATH <not present>
+VL_DATA_PATH <not present>
+VL_VERBOSITY_LEVEL <not present>
+VL_CHECK_GL_STATES <not present>
+
+ --- Global Settings --- 
+Log file  = log.txt
+Data path = ../data
+Verbosity level = ERROR
+Check OpenGL States = NO
+
+Applet info: AppletNoName
+Keys:
+- Left/Right Arrow: change raycast technique.
+- Up/Down Arrow: changes SAMPLE_STEP.
+- L: toggles lights (useful only for isosurface).
+- Mouse Wheel: change the bias used to render the volume.
+
+- Drop inside the window a set of 2D files or a DDS or DAT volume to display it.
+

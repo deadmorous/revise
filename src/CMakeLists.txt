@@ -1,0 +1,31 @@
+cmake_minimum_required (VERSION 3.1.3) 
+project (src)
+
+add_subdirectory(s3dmm)
+# add_subdirectory(s3dmm_cli)
+add_subdirectory(s3dmm_prep)
+add_subdirectory(ctmlex)
+add_subdirectory(tecplot_rw)
+add_subdirectory(tecplot_gen)
+add_subdirectory(tecplot2bin)
+add_subdirectory(ws_sendframe)
+if (S3DMM_ENABLE_REN)
+    add_subdirectory(s3vs_worker)
+    add_subdirectory(s3vs_lib)
+endif()
+
+if (S3DMM_ENABLE_CUDA)
+    add_subdirectory(s3dmm_cuda)
+endif()
+
+if(S3DMM_ENABLE_VTK)
+    add_subdirectory(vtk2bin)
+endif()
+
+if (S3DMM_BUILD_S3VS_JS)
+    add_subdirectory(s3vs_js)
+endif()
+
+if (S3DMM_BUILD_WS_SENDFRAME_JS)
+    add_subdirectory(ws_sendframe_js)
+endif()

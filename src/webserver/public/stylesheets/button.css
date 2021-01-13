@@ -1,0 +1,69 @@
+button {
+    outline: none;
+}
+
+button:hover {
+    box-shadow: 0 0 5px -1px green;
+}
+
+
+
+
+
+
+.tool {
+    border: 1px solid gray;
+    border-radius: 7px;
+    padding: 10px;
+    margin: 5px;
+    background-color: white;
+    outline: none;
+}
+
+.tool:active {
+    box-shadow: inset 0 0 5px -1px green;
+}
+
+
+
+
+
+
+
+.dialog-btn, .ui-dialog .ui-button{
+    margin: 5px;
+    outline: none;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid gray;
+    border-radius: 7px;
+    padding: 7px;
+    align-self: center;
+}
+
+.dialog-btn:hover {
+    box-shadow: 0 0 5px -1px green;
+}
+
+.dialog-btn:active {
+    box-shadow: inset 0 0 5px -1px green;
+}
+
+
+
+
+.setting-btn {
+    margin: 3px;
+    outline: none;
+    background-color: rgb(209, 209, 209);
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.setting-btn:hover {
+    box-shadow: 0 0 5px -1px green;
+}
+
+.setting-btn:active {
+    box-shadow: inset 0 0 5px -1px green;
+}

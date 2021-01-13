@@ -1,0 +1,11 @@
+/**
+\defgroup tecplot_gen Utility to generate test datasets for s3dmm-based visualization
+@{
+
+\dir src/tecplot_gen Test dataset generator source directory
+
+The program is a command line utility. It can generate files in the tecplot and binary formats
+understood by the s3dmm preprocessor. Use the <tt>--help</tt> command line option for more information.
+
+@}
+*/

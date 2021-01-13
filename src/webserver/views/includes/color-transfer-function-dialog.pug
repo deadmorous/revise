@@ -1,0 +1,27 @@
+#ctf-dialog.dialog.hidden
+    #ctf-opacity
+        canvas#ctf-opacity-canvas
+        #ctf-opacity-options
+            #ctf-opacity-buttons
+                button#ctf-opacity-setDefault-btn.ordinary-btn(title="Set Default")
+                button#ctf-opacity-remove-btn.ordinary-btn(title="Remove Selected Point")
+            #ctf-opacity-inputs
+                .row-oriented
+                    label Relative value:
+                    #ctf-opacity-selected-relval
+                .row-oriented
+                    label Opacity:
+                    #ctf-opacity-selected-opacity
+    #ctf-colormap
+        canvas#ctf-colormap-canvas
+        #ctf-colormap-options
+            #ctf-colormap-buttons
+                button#ctf-colormap-setDefault-btn.ordinary-btn(title="Set Default")
+                button#ctf-colormap-remove-btn.ordinary-btn(title="Remove Selected Point")
+            #ctf-colormap-inputs
+                .row-oriented
+                    label Relative value:
+                    #ctf-colormap-relval-input
+                .row-oriented
+                    label Color:
+                    input#ctf-colormap-color-input(type=text readonly)

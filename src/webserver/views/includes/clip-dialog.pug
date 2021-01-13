@@ -1,0 +1,29 @@
+#clip-dialog.column-oriented.field-mode-control.align-items-center.hidden
+    .row-oriented
+        label Plane name
+        input#clipping-plane-name(type="text" value="Plane")
+
+    mixin point(point,namePrefix)
+        .row-oriented.justify-content-end
+            label #{point}
+            +number-input( "x", namePrefix + "x" )
+            +number-input( "y", namePrefix + "y" )
+            +number-input( "z", namePrefix + "z" )
+
+    select#clip-mode-select.normal-select
+        option#clip-origin-normal-option(selected value="origin-normal") By origin and normal
+        option#clip-points-option(value="points") By points
+
+    form#clip-normal-origin.column-oriented
+        +point("Origin ","originClip")
+        +point("Normal","normalClip")
+
+    form#clip-points.column-oriented
+        .column-oriented
+            +point("Point 1","clip-point1")
+            +point("Point 2","clip-point2")
+            +point("Point 3","clip-point3")
+        
+        .row-oriented.justify-content-center
+            label(for="inverseNormal") Inverse normal
+            input#inverseNormal(name="inverseNormal" type="checkbox")

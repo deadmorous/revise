@@ -1,0 +1,31 @@
+.player-btn {
+    background-color: white;
+}
+
+.player-btn[disabled] {
+    background-color: rgb(226, 226, 226);
+}
+
+#to-begin-btn {
+    background-image: url("/images/begin.svg");
+}
+
+#previous-btn {
+    background-image: url("/images/previous.svg");
+}
+
+#play-pause-btn.pause {
+    background-image: url("/images/pause.svg");
+}
+
+#play-pause-btn.play {
+    background-image: url("/images/play.svg");
+}
+
+#next-btn {
+    background-image: url("/images/next.svg");
+}
+
+#to-end-btn {
+    background-image: url("/images/end.svg");
+}

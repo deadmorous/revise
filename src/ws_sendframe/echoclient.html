@@ -1,0 +1,210 @@
+<html>
+
+<head>
+    <title>WebSocket Echo Client</title>
+</head>
+
+<body>
+    <h1>WebSocket Echo Client</h1>
+    <canvas id="c"></canvas>
+    <table>
+        <tr>
+            <td>n1</td>
+            <td>n2</td>
+            <td>level</td>
+            <td>time</td>
+            <td>quality</td>
+        </tr>
+        <tr>
+            <td><span id="stat_n1"/></td>
+            <td><span id="stat_n2"/></td>
+            <td><span id="stat_level"/></td>
+            <td><span id="stat_time"/></td>
+            <td><span id="stat_quality"/></td>
+        </tr>
+
+    </table>
+    <p>
+        <input type="text" id="address" value="localhost:1234" />
+    </p>
+    <p>
+        <button onClick="initWebSocket();">Connect</button>
+        <button onClick="stopWebSocket();">Disconnect</button>
+        <button onClick="checkSocket();">State</button>
+
+    </p>
+    <p>
+        <textarea id="debugTextArea" style="width:400px;height:200px;"></textarea>
+    </p>
+    <p>
+        <input type="text" id="inputText" onkeydown="if(event.keyCode==13)sendMessage();" />
+        <button onClick="sendMessage();">Send</button>
+    </p>
+
+    <script type="text/javascript">
+        var frameNum = 0;
+        var debugTextArea = document.getElementById("debugTextArea");
+        var isResizedToImageSize = false;
+        function drawImage(src) {
+            var canvas = document.getElementById("c");
+            var ctx = canvas.getContext("2d");
+
+            var image = new Image();
+            image.onload = function () {
+                ctx.drawImage(image, 0, 0);
+                if (!isResizedToImageSize) {
+                    canvas.height = image.height;
+                    canvas.width = image.width;
+                    isResizedToImageSize = true;
+                }
+            };
+            image.src = src
+        }
+
+        function debugOutput(text) {
+            debugTextArea.value += text + "\n";
+            debugTextArea.scrollTop = debugTextArea.scrollHeight;
+        }
+
+        function setText(id, text) {
+            document.getElementById(id).innerHTML = text
+        }
+
+        function processTextMessage(message) {
+            const type = message[0]
+            const hasImage = type === 'n'
+            const hasHeader = hasImage || type === 'f'
+            if (hasHeader) {
+                const list = message.split("##")
+                const n1 = +list[1]
+                const n2 = +list[2]
+                setText("stat_n1", n1)
+                setText("stat_n2", n2)
+                setText("stat_level", +list[3])
+                setText("stat_time", +list[4])
+                setText("stat_quality", hasImage? +list[5]: "-")
+                if (websocket) {
+                    const response = `n:${n1}:${n2}`
+                    websocket.send(response);
+                }
+                if (hasImage)
+                    drawImage(list[6])
+            }
+        }
+
+        async function processBinaryMessage(message) {
+            let ab = await message.arrayBuffer()
+            let dv = new DataView(ab)
+            let pos = 0
+            let getUint8  = () => { const result = dv.getUint8 (pos, true); pos += 1; return result; }
+            let getUint32 = () => { const result = dv.getUint32(pos, true); pos += 4; return result; }
+            let getUint64 = () => {
+                const lo = getUint32()
+                const hi = getUint32()
+                return hi * 0xffffffff + lo
+            }
+            let type = getUint8()
+            const n1 = getUint64()
+            const n2 = getUint64()
+            const level = getUint32()
+            const durationMs = getUint64()
+            const quality = getUint32()
+            let src = ab.slice(pos)
+            let blob = new Blob([src], {type: 'image/jpeg'});
+            let imageUrl = URL.createObjectURL(blob);
+            if (websocket) {
+                const response = `n:${n1}:${n2}`
+                websocket.send(response);
+            }
+            setText("stat_n1", n1)
+            setText("stat_n2", n2)
+            setText("stat_level", level)
+            setText("stat_time", durationMs)
+            setText("stat_quality", quality)
+            drawImage(imageUrl)
+        }
+
+        function processMessage(message)
+        {
+            if (message instanceof Blob)
+                processBinaryMessage(message)
+            else
+                processTextMessage(message)
+        }
+
+        function sendMessage() {
+            var msg = document.getElementById("inputText").value;
+            if (websocket != null) {
+                document.getElementById("inputText").value = "";
+                websocket.send(msg);
+                console.log("string sent :", '"' + msg + '"');
+            }
+        }
+
+        var websocket = null;
+
+        function initWebSocket() {
+            try {
+                if (typeof MozWebSocket == 'function')
+                    WebSocket = MozWebSocket;
+                if (websocket && websocket.readyState == 1)
+                    websocket.close();
+                var wsUri = "ws://" + document.getElementById("address").value;
+                websocket = new WebSocket(wsUri);
+                websocket.onopen = function (evt) {
+                    debugOutput("CONNECTED");
+                    websocket.send("s:a")
+                };
+                websocket.onclose = function (evt) {
+                    debugOutput("DISCONNECTED");
+                };
+                websocket.onmessage = function (evt) {
+                    processMessage(evt.data);
+                };
+                websocket.onerror = function (evt) {
+                    debugOutput('ERROR: ' + evt.data);
+                };
+            } catch (exception) {
+                debugOutput('ERROR: ' + exception);
+            }
+        }
+
+        function stopWebSocket() {
+            if (websocket)
+                websocket.close();
+        }
+
+        function checkSocket() {
+            if (websocket != null) {
+                var stateStr;
+                switch (websocket.readyState) {
+                    case 0: {
+                        stateStr = "CONNECTING";
+                        break;
+                    }
+                    case 1: {
+                        stateStr = "OPEN";
+                        break;
+                    }
+                    case 2: {
+                        stateStr = "CLOSING";
+                        break;
+                    }
+                    case 3: {
+                        stateStr = "CLOSED";
+                        break;
+                    }
+                    default: {
+                        stateStr = "UNKNOW";
+                        break;
+                    }
+                }
+                debugOutput("WebSocket state = " + websocket.readyState + " ( " + stateStr + " )");
+            } else {
+                debugOutput("WebSocket is null");
+            }
+        }
+    </script>
+</body>
+
+</html>
