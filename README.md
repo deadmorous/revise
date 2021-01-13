@@ -13,7 +13,7 @@ First of all, open a Linux terminal and switch to a directory of your choice, wh
 ```{bash}
 # Clone the ReVisE repository
 # TODO: Change URL
-git clone git@equares.ctmech.ru:stepan/revise.git
+git clone https://github.com/deadmorous/revise.git
 cd revise
 
 # Optionally set up Qt, e.g.
