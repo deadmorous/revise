@@ -123,6 +123,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
     }
 
 
+    const black = new objects.Rgb(0, 0, 0);
+    const white = new objects.Rgb(255, 255, 255);
     class SettingsService {
         constructor() {
             this.dialog = new SettingsDialog();
@@ -155,9 +157,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             }
             let data = JSON.parse(dataStr);
             this.settingsData = SettingsData.make(data);
-            objects.ctfService.setBackgroundColor(
-                this.settingsData.backgroundColor
-            );
+            let backgroundColor = this.settingsData.backgroundColor;
+            objects.ctfService.setBackgroundColor(backgroundColor);
+            let colorString = backgroundColor.lengthTo(black) < backgroundColor.lengthTo(white)? 
+                "white" : "black";
+            $("#sources-link").css("color", colorString);
             this.sendData();
             this.notifyOther();
         }
@@ -169,9 +173,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
                 this.sendData();
                 this.notifyOther();
                 this.store();
-                objects.ctfService.setBackgroundColor(
-                    this.settingsData.backgroundColor
-                );
+                let backgroundColor = this.settingsData.backgroundColor;
+                objects.ctfService.setBackgroundColor(backgroundColor);
+                let colorString = backgroundColor.lengthTo(black) < backgroundColor.lengthTo(white)? 
+                    "white" : "black";
+                $("#sources-link").css("color", colorString);
             };
             this.dialog.addSubmitHandler(handler.bind(this));
         }
