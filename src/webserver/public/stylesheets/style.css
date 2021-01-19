@@ -37,6 +37,7 @@ canvas {
 }
 
 #viewport {
+  position: relative;
   display: flex;
   --margin-value: 5px;
   flex-grow: 1;
@@ -91,4 +92,20 @@ input[type=text] {
 
 #background-color-input {
   width: 65px;
+}
+
+#sources-link {
+  position: fixed;
+  display: inline;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0 8px;
+  font-size: small;
+  text-decoration: none;
+  font-family: sans-serif;
+}
+
+#sources-link:hover {
+  text-decoration: underline;
 }
