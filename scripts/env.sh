@@ -2,30 +2,30 @@
 #
 # Usage: source env.sh [debug|release]
 #
-S3DMM_SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-S3DMM_ROOT_DIR=$(realpath $S3DMM_SCRIPTS_DIR/..)
-S3DMM_CUSTOM_SCRIPTS_DIR=$S3DMM_SCRIPTS_DIR/custom
+REVISE_SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export REVISE_ROOT_DIR=$(realpath $REVISE_SCRIPTS_DIR/..)
+REVISE_CUSTOM_SCRIPTS_DIR=$REVISE_SCRIPTS_DIR/custom
 
-[ "$1" == "debug" ] && S3DMM_BUILD_TYPE=debug || S3DMM_BUILD_TYPE=release
+[ "$1" == "debug" ] && REVISE_BUILD_TYPE=debug || REVISE_BUILD_TYPE=release
 
-if [ -f "$S3DMM_CUSTOM_SCRIPTS_DIR/env.sh" ]; then
-    echo found $S3DMM_CUSTOM_SCRIPTS_DIR/env.sh, sourcing...
-    source $S3DMM_CUSTOM_SCRIPTS_DIR/env.sh
+if [ -f "$REVISE_CUSTOM_SCRIPTS_DIR/env.sh" ]; then
+    echo found $REVISE_CUSTOM_SCRIPTS_DIR/env.sh, sourcing...
+    source $REVISE_CUSTOM_SCRIPTS_DIR/env.sh
 fi
 
-[ -z "$S3DMM_BUILD_DIR_RELEASE" ] && S3DMM_BUILD_DIR_RELEASE=$S3DMM_ROOT_DIR/builds/revise/release
-[ -z "$S3DMM_BUILD_DIR_DEBUG" ] && S3DMM_BUILD_DIR_DEBUG=$S3DMM_ROOT_DIR/builds/revise/debug
-if [ -z "$S3DMM_BUILD_DIR" ]; then
-    [ "$S3DMM_BUILD_TYPE" == "debug" ] && S3DMM_BUILD_DIR=$S3DMM_BUILD_DIR_DEBUG || S3DMM_BUILD_DIR=$S3DMM_BUILD_DIR_RELEASE
+[ -z "$REVISE_BUILD_DIR_RELEASE" ] && REVISE_BUILD_DIR_RELEASE=$REVISE_ROOT_DIR/builds/revise/release
+[ -z "$REVISE_BUILD_DIR_DEBUG" ] && REVISE_BUILD_DIR_DEBUG=$REVISE_ROOT_DIR/builds/revise/debug
+if [ -z "$REVISE_BUILD_DIR" ]; then
+    [ "$REVISE_BUILD_TYPE" == "debug" ] && REVISE_BUILD_DIR=$REVISE_BUILD_DIR_DEBUG || REVISE_BUILD_DIR=$REVISE_BUILD_DIR_RELEASE
 fi
-[ -z "$S3DMM_BINARY_DIR" ] && S3DMM_BINARY_DIR=$S3DMM_BUILD_DIR/bin
+[ -z "$REVISE_BINARY_DIR" ] && REVISE_BINARY_DIR=$REVISE_BUILD_DIR/bin
 
-if [ ! -d "$S3DMM_BINARY_DIR" ]; then
-    >&2 echo "ERROR: s3dmm binary directory does not exist: $S3DMM_BINARY_DIR"
+if [ ! -d "$REVISE_BINARY_DIR" ]; then
+    >&2 echo "ERROR: s3dmm binary directory does not exist: $REVISE_BINARY_DIR"
     return 1
 fi
 
-export PATH=$S3DMM_BINARY_DIR:$S3DMM_SCRIPTS_DIR:$PATH
+export PATH=$REVISE_BINARY_DIR:$REVISE_SCRIPTS_DIR:$PATH
 
-export LD_LIBRARY_PATH=$S3DMM_ROOT_DIR/dist/lib:$S3DMM_BINARY_DIR${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export LD_LIBRARY_PATH=$REVISE_ROOT_DIR/dist/lib:$REVISE_BINARY_DIR${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 

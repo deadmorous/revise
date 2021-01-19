@@ -9,7 +9,7 @@ const args = process.argv.slice(2)
 const webserverDir = path.normalize(path.join(scriptDir, '..', 'src', 'webserver'))
 
 const vsEnvFileName = path.join(scriptDir, 'custom', 'webserver_env.sh')
-const rxProblemListConfigLine = /^export s3vs_problem_list_file=\$S3DMM_CUSTOM_SCRIPTS_DIR\/(.*)$/
+const rxProblemListConfigLine = /^export s3vs_problem_list_file=\$REVISE_CUSTOM_SCRIPTS_DIR\/(.*)$/
 
 function installedProblemListFileName() {
     let vsEnvFileContents
@@ -37,7 +37,7 @@ function installProblemListFile(problemListFileName) {
         vsEnvFileContents = fs.readFileSync(vsEnvFileName, 'utf8')
         let lines = vsEnvFileContents.split(/\r?\n/)
         let matched = false
-        const problemListConfigLine = `export s3vs_problem_list_file=$S3DMM_CUSTOM_SCRIPTS_DIR/${problemListFileName}`
+        const problemListConfigLine = `export s3vs_problem_list_file=$REVISE_CUSTOM_SCRIPTS_DIR/${problemListFileName}`
         for (let i=0, n=lines.length; i<n; ++i) {
             let line = lines[i]
             const m = line.match(rxProblemListConfigLine)
@@ -60,7 +60,7 @@ function installProblemListFile(problemListFileName) {
     catch(e) {
         vsEnvFileContents = `#!/bin/bash
 
-export s3vs_problem_list_file=$S3DMM_CUSTOM_SCRIPTS_DIR/${problemListFileName}
+export s3vs_problem_list_file=$REVISE_CUSTOM_SCRIPTS_DIR/${problemListFileName}
 `
     }
     fs.writeFileSync(vsEnvFileName, vsEnvFileContents)

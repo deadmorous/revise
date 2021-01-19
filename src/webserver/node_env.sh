@@ -3,12 +3,12 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 source $SCRIPT_DIR/../../scripts/env.sh $1
 
-if [ -f "$S3DMM_CUSTOM_SCRIPTS_DIR/webserver_env.sh" ]; then
-    echo found $S3DMM_CUSTOM_SCRIPTS_DIR/webserver_env.sh, sourcing...
-    source $S3DMM_CUSTOM_SCRIPTS_DIR/webserver_env.sh
+if [ -f "$REVISE_CUSTOM_SCRIPTS_DIR/webserver_env.sh" ]; then
+    echo found $REVISE_CUSTOM_SCRIPTS_DIR/webserver_env.sh, sourcing...
+    source $REVISE_CUSTOM_SCRIPTS_DIR/webserver_env.sh
 fi
 
-[ -z "$s3vs_binary_dir" ] && s3vs_binary_dir=$S3DMM_BINARY_DIR
+[ -z "$s3vs_binary_dir" ] && s3vs_binary_dir=$REVISE_BINARY_DIR
 [ -z "$s3vs_problem_list_file" ] && s3vs_problem_list_file=$SCRIPT_DIR/configs/problems.json
 [ -z "$s3vs_sendframe_port" ] && s3vs_sendframe_port=1234
 [ -z "$kill_vsc_interval" ] && kill_vsc_interval=60000

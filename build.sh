@@ -10,7 +10,7 @@ set -e
 mkdir -p $SCRIPTDIR/builds/revise/release
 cd $SCRIPTDIR/builds/revise/release
 
-cmake -DCMAKE_BUILD_TYPE=Release $SCRIPTDIR
+cmake -DCMAKE_BUILD_TYPE=Release "$@" $SCRIPTDIR
 cpu_count=$(cat /proc/cpuinfo |grep processor| wc -l)
 make -j$cpu_count
 

@@ -7,7 +7,7 @@ const scriptDir = path.dirname(process.argv[1])
 const args = process.argv.slice(2)
 
 const vsEnvFileName = path.join(scriptDir, 'custom', 'webserver_env.sh')
-const rxHwConfigLine = /^export s3vs_config_file=\$S3DMM_CUSTOM_SCRIPTS_DIR\/(.*)$/
+const rxHwConfigLine = /^export s3vs_config_file=\$REVISE_CUSTOM_SCRIPTS_DIR\/(.*)$/
 
 function installedHwConfigFileName() {
     let vsEnvFileContents
@@ -35,7 +35,7 @@ function installHwConfigFile(hwConfigFileName) {
         vsEnvFileContents = fs.readFileSync(vsEnvFileName, 'utf8')
         let lines = vsEnvFileContents.split(/\r?\n/)
         let matched = false
-        const hwConfigLine = `export s3vs_config_file=$S3DMM_CUSTOM_SCRIPTS_DIR/${hwConfigFileName}`
+        const hwConfigLine = `export s3vs_config_file=$REVISE_CUSTOM_SCRIPTS_DIR/${hwConfigFileName}`
         for (let i=0, n=lines.length; i<n; ++i) {
             let line = lines[i]
             const m = line.match(rxHwConfigLine)
@@ -58,7 +58,7 @@ function installHwConfigFile(hwConfigFileName) {
     catch(e) {
         vsEnvFileContents = `#!/bin/bash
 
-export s3vs_config_file=$S3DMM_CUSTOM_SCRIPTS_DIR/${hwConfigFileName}
+export s3vs_config_file=$REVISE_CUSTOM_SCRIPTS_DIR/${hwConfigFileName}
 `
     }
     fs.writeFileSync(vsEnvFileName, vsEnvFileContents)
