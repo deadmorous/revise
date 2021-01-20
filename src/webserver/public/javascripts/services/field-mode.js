@@ -38,7 +38,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
         run() {
             this.selectJQ.attr("disabled", false);
             this.activeUi.enable();
-            objects.controlPanel.setOwner(this.activeUi);
             this.restore();
         }
         stop() {
@@ -56,6 +55,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
                 return;
             let data = JSON.parse(dataStr);
 
+            this.isRestoring = true;
             objects.isosurfaceUi.restore();
             objects.domainVoxelsUi.restore();
             objects.mipUi.restore();
@@ -66,6 +66,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
                 this.selectJQ.val(data.fieldMode);
                 this.selectJQ.change();
             }
+            this.isRestoring = false;
         }
         store() {
             let problem = $("#problem-select").val();
@@ -119,9 +120,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
             this.setFieldRange(range);
             this.setEmptyUiValues();
-            
-            if(this.activeUi.isCompleted())
-                this.activeUi.submit();
         }
 
         setFieldRange(range) {

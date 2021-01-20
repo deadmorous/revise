@@ -420,7 +420,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             this.defineActiveUi();
 
             let changeCb = ()=>{
-                this.store();
+                if(!objects.fieldModeService.isRestoring)
+                    this.store();
                 if(this.isCompleted())
                     this.submit();
                 else
@@ -519,7 +520,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
         }
         update() {
             this.sendData();
-            this.store();
+            if(!objects.fieldModeService.isRestoring)
+                this.store();
         }
         sendData() {
             let levels = this.activeUi.extractLevels();
