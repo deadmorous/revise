@@ -218,6 +218,10 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
         hideDialog() {
             this.dialog.cancel();
         }
+        reset() {
+            this.settingsData = new SettingsData();
+            this.sendData();
+        }
     }
     objects.settingsService = new SettingsService();
 })()

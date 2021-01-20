@@ -148,6 +148,13 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             if(!objects.argbUi.isCompleted())
                 objects.argbUi.reset();
         }
+        reset() {
+            objects.mipUi.reset();
+            objects.isosurfaceUi.reset();
+            objects.domainVoxelsUi.reset();
+            objects.argbLightUi.reset();
+            objects.argbUi.reset();
+        }
     }
     objects.fieldModeService = new FieldModeService();
 })()
