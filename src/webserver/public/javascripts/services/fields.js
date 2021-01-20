@@ -86,6 +86,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
                 objects.showError(error.message);
             }
         }
+        // receive fields names and set ones as options for dropdown list
         updateFields() {
             let req = new objects.GetRequest("vs/fields/names","");
             let fields = req.perform().receivedData();
@@ -110,8 +111,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
                     .text(fieldName)
                     .appendTo(this.primaryFieldSelectJQ);
             }, this);
-            this.primaryFieldSelectJQ.val(fields[0]);
-            this.primaryFieldSelectJQ.change();
         }
     }
     objects.fieldsService = new FieldsService();

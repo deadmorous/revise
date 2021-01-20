@@ -72,6 +72,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
         setBackgroundColor(rgb) {
             this.ctfDialog.setBackgroundColor(rgb);
         }
+        reset() {
+            this.ctf = new objects.Ctf.Func();
+            this.ctf.setDefault();
+            this.sendData();
+        }
     }
     objects.ctfService = new CtfService();
 })()

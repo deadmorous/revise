@@ -38,6 +38,10 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             objects.clippingPlanesUi.clearPlanes();
             objects.controlPanel.setOwner(objects.fieldModeService.activeUi);
         }
+        reset() {
+            objects.clippingPlanesUi.clearPlanes();
+            objects.clippingPlanesUi.onUpdate();
+        }
         // private
         raiseUi() {
             this.btnJQ.blur();

@@ -45,6 +45,9 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             let threshold = this.thresholdInput.getRelativeValue();
             new objects.InputSetRequest("fieldParam.threshold", threshold).perform();
 
+            // storing step
+            if(objects.fieldModeService.isRestoring)
+                return;
             let problem = $("#problem-select").val();
             if(problem == "none")
                 return;
@@ -63,7 +66,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             let data = JSON.parse(dataStr);
             let threshold = data[this.fieldMode];
             if(!isNaN(threshold)) {
-                this.thresholdInput.setValue(threshold);
+                this.thresholdInput.setRelativeValue(threshold);
                 if(this.thresholdInput.isCompleted() && !this.isHidden)
                     this.submit();
                 else
