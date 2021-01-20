@@ -26,5 +26,12 @@
     .row-oriented
         label Background Color
         input#background-color-input(type="text")
-    
+
+    .row-oriented
+        label Rendering level: 
+        select#rendering-level-select
+            option(value="progressive" selected) Progressive
+            - let i = 0;
+            while i < 11
+                option(value=i) #{i++}
 

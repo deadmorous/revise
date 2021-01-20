@@ -27,6 +27,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             this.fieldPresentationMode = "absolute";
             this.animationInterval = 500;
             this.backgroundColor = new objects.Rgb(0, 0, 0);
+            this.renderLevel = -1;
         }
 
         getData() {
@@ -37,6 +38,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             data.fieldPresentationMode = this.fieldPresentationMode;
             data.animationInterval = this.animationInterval;
             data.backgroundColor = this.backgroundColor;
+            data.renderLevel = this.renderLevel;
             return data;
         }
         static make(data) {
@@ -48,6 +50,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             settingsData.animationInterval = data.animationInterval;
             settingsData.backgroundColor = objects.Rgb
                 .makeFromTuple(data.backgroundColor);
+            settingsData.renderLevel = data.renderLevel;
             return settingsData;
         }
     }
@@ -64,6 +67,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             this.renderQualityInput = new objects.InputWithSlider($("#renderQuality"), "Render Quality");
             this.fieldPresentationJQ = this.nodeJQ.find("input[name=field-values-mode]");
             this.backgroundColorInput = new objects.ColorPicker($("#background-color-input"));
+            this.renderLevelInputJQ = $("#rendering-level-select");
+            this.currentRenderLevel = -1;
 
             this.init();
             this.hide();
@@ -81,6 +86,9 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             this.timeStepInput = new objects.NumberInput(timeStepContnr, placeholder);
             this.timeStepInput.setDefaultValue(500);
             this.timeStepInput.reset();
+
+            this.renderLevelInputJQ.val("progressive");
+            this.currentRenderLevel = -1;
         }
         setSettingsData(data) {
             this.settingsData = data;
@@ -90,6 +98,9 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             this.timeStepInput.setValue(data.animationInterval);
             this.setFieldPresentationMode(data.fieldPresentationMode);
             this.backgroundColorInput.setColor(data.backgroundColor);
+            this.renderLevelInputJQ.val(data.renderLevel == -1?
+                "progressive" : data.renderLevel);
+            this.currentRenderLevel = data.renderLevel;
         }
         getSettingsData() {
             this.settingsData.fovY = this.fovYInput.getValue();
@@ -98,6 +109,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             this.settingsData.renderQuality = this.renderQualityInput.getValue();
             this.settingsData.animationInterval = this.timeStepInput.getValue();
             this.settingsData.backgroundColor = this.backgroundColorInput.rgb;
+            this.settingsData.renderLevel = this.renderLevelInputJQ.val() == "progressive"? 
+                -1 : Number(this.renderLevelInputJQ.val());
             return this.settingsData;
         }
         cancel() {
@@ -111,6 +124,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             this.renderPatienceInput.reset();
             this.renderQualityInput.reset();
             this.timeStepInput.reset();
+            this.renderLevelInputJQ.val(this.currentRenderLevel == -1?
+                "progressive" : this.currentRenderLevel);
         }
         getFieldPresentationMode() {
             return this.fieldPresentationJQ.filter(":checked").val();
@@ -190,6 +205,9 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
                 backgroundColor.g / 255,
                 backgroundColor.b / 255
             ]).perform(async);
+            
+            new objects.InputSetRequest("renderLevel", this.settingsData.renderLevel)
+                .perform(async);
         }
         notifyOther() {
             objects.timeService.setTimeStep(this.settingsData.animationInterval);
