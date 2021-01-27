@@ -7,6 +7,23 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 set -e
 
+# Parse command line
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+    echo processing argument "$1"
+    case "$1" in
+        --with-tsv-utils)
+            WITH_TSV_UTILS=YES
+            shift
+            ;;
+        *)
+            POSITIONAL+=("$1")
+            shift
+            ;;
+    esac
+done
+
 # Update third party modules
 git submodule update --init --recursive
 
@@ -34,3 +51,14 @@ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$SCRIPTDIR/dist $SCRIPTD
 make -j$cpu_count install
 cd ../..
 
+cd ..
+
+if [ "$WITH_TSV_UTILS" = "YES" ]; then
+    # Build tsv-utils
+    # Note: you will need the D language! To install on Ubuntu, run
+    # sudo snap install --classic dmd
+    echo "Building tsv-utils"
+    cd third_parties/tsv-utils
+    make -j$cpu_count
+    cd -
+fi
