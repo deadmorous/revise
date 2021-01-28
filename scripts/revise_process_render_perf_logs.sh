@@ -1,77 +1,82 @@
 #!/bin/bash
 
-# $1 --- the directory with .log files to process. Must contain files VsRendererDrawTimestamps-*.log
-# All output files will be written also here.
-REVISE_SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-REVISE_ROOT_DIR=$(realpath $REVISE_SCRIPTS_DIR/..)
+set -e
+
+if [ -z "$1" ]; then
+    echo "clean.sh ERROR: '\$1' must contain directory name to be processed"
+    exit
+fi
 
 LOG_DIR=$1
 
-TSV_UTILS_BIN=$REVISE_ROOT_DIR/third_parties/tsv-utils/bin
-REVISE_BIN=$REVISE_SCRIPTS_DIR/builds/revise/release/bin
-PATH=$PATH:$TSV_UTILS_BIN:$REVISE_BIN
+format2digits()
+{
+    [ ${#1} -eq 1 ] && echo 0$1 || echo $1
+}
 
-set -e
+findLogs()
+{
+    local r=$1
+    callback=$2
+    ngpu=1
+#    input_files=()
+    while :
+    do
+        nwrk=$(( $ngpu * $r ))
 
-# Generate tables and images
-for log in $LOG_DIR/VsRendererDrawTimestamps-*.log; do
-    echo Processing $log
-    vis_timestamps --input $log --mode task_timeline
-    vis_timestamps --input $log --mode task_stage_timeline
-    vis_timestamps --input $log --mode task_duration --favg 1-$ --proj "level|duration|^.*_count$|^.*_avg$" >$log.dir/task_avg_duration.tsv
-    vis_timestamps --input $log --mode task_stage_duration --favg 1-$ --proj "level|duration|^.*_count$|^.*_avg$" >$log.dir/task_stage_avg_duration.tsv
+        input_file=$LOG_DIR/VsRendererDrawTimestamps-$ngpu-$nwrk-*.log
+        if [ -f $input_file ]; then
+            $callback $r $ngpu $nwrk $input_file
+#            input_files+=("$input_file")
+        fi
+
+        ngpu=$(( $ngpu * 2 ))
+        if [ $ngpu -gt 100 ]; then
+            break
+        fi
+    done
+#    echo $input_files
+}
+
+filter_file() {
+    tsv-filter -H --not-empty level "$3" \
+    | keep-header -- sed "s/^/$1\t$2\t/" \
+    | sed "s/^level/workers per GPU\tGPUs\tlevel/" \
+    >"$4"
+}
+
+processLog()
+{
+    local r=$1
+    local ngpu=$2
+    local nwrk=$3
+    local input_file=$4
+
+    echo Processing $input_file
+    vis_timestamps --input $input_file --mode task_timeline
+    vis_timestamps --input $input_file --mode task_stage_timeline
+    vis_timestamps --input $input_file --mode task_duration --favg 1-$ --proj "level|duration|^.*_count$|^.*_avg$" >$input_file.dir/task_avg_duration.tsv
+    vis_timestamps --input $input_file --mode task_stage_duration --favg 1-$ --proj "level|duration|^.*_count$|^.*_avg$" >$input_file.dir/task_stage_avg_duration.tsv
+
+    filter_file $r $ngpu $input_file.dir/task_avg_duration.tsv tmp/${r}_${ngpu}_total_avg.tsv
+    filter_file $r $ngpu $input_file.dir/task_stage_avg_duration.tsv tmp/${r}_${ngpu}_stage_avg.tsv
+}
+
+mergeLogs()
+{
+    basename="$1"
+    tsv-append -H tmp/*_$basename \
+    | keep-header -- sort -s -k 3,3 \
+    | keep-header -- sort -s -k 1,1 \
+    | keep-header -- sort -s -k 2,2 \
+    >$LOG_DIR/$basename
+}
+
+mkdir -p tmp
+for r in 1 2 4; do
+    echo workers per GPU: $r
+    findLogs $r processLog
+    mergeLogs total_avg.tsv
+    mergeLogs stage_avg.tsv
 done
-
-# Process tables (collect data from different tables into other tables)
-# Note: this requires tsv-utils
-
-for basename in task_avg_duration task_stage_avg_duration; do
-    mkdir -p tmp
-
-    input_files=""
-    for n in 1 2 4 8; do
-        input_file=$LOG_DIR/VsRendererDrawTimestamps-0$n-0$n-16.log.dir/${basename}.tsv
-	if [ -f "$input_file" ]; then
-        	tmp_file=tmp/$n.tsv
-        	tsv-filter -H --not-empty level $input_file >$tmp_file
-        	input_files=${input_files:+$input_files }$tmp_file
-	fi
-    done
-
-    if [ ! -z "$input_files" ]; then
-	tsv-append -H -t $input_files |keep-header -- sort -s -k 2,2 >tmp/avg_durations_1w.tsv
-    fi
-
-    input_files=""
-    for n in 01-02 02-04 04-08 08-16; do
-        input_file=$LOG_DIR/VsRendererDrawTimestamps-$n-16.log.dir/${basename}.tsv
-	if [ -f "$input_file" ]; then
-        	tmp_file=tmp/$n.tsv
-        	tsv-filter -H --not-empty level $input_file >$tmp_file
-        	input_files=${input_files:+$input_files }$tmp_file
-	fi
-    done
-
-    if [ ! -z "$input_files" ]; then
-    	tsv-append -H -t $input_files |keep-header -- sort -s -k 2,2 >tmp/avg_durations_2w.tsv
-    fi
-
-    input_files=""
-    for n in 01-04 02-08 04-16 08-32; do
-        input_file=$LOG_DIR/VsRendererDrawTimestamps-$n-16.log.dir/${basename}.tsv
-	if [ -f "$input_file" ]; then
-        	tmp_file=tmp/$n.tsv
-        	tsv-filter -H --not-empty level $input_file >$tmp_file
-        	input_files=${input_files:+$input_files }$tmp_file
-	fi
-    done
-    if [ ! -z "$input_files" ]; then
-    	tsv-append -H -t $input_files |keep-header -- sort -s -k 2,2 >tmp/avg_durations_4w.tsv
-    fi
-
-    if [ -f tmp/avg_durations_1w.tsv -a -f tmp/avg_durations_2w.tsv -a -f tmp/avg_durations_4w.tsv ]; then
-	    tsv-append -H tmp/avg_durations_1w.tsv tmp/avg_durations_2w.tsv tmp/avg_durations_4w.tsv |keep-header -- sort -s -k 2,2 >$LOG_DIR/${basename}_all.tsv
-    fi
-
-    rm -rf tmp/
-done
+rm -rf tmp
