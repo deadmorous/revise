@@ -1,9 +1,11 @@
 #include "s3vs/VsWorkerTimestamps.hpp"
 #include "foreach_byindex32.hpp"
 
-#include <QApplication>
+#include <QGuiApplication>
+#include <QFontDatabase>
 #include <QImage>
 #include <QPainter>
+#include <QDir>
 
 #include <fstream>
 #include <iostream>
@@ -246,6 +248,8 @@ QColor timeBarColor(const TimeBar::Type& type)
         case TimeBar::End:
             return QColor::fromRgba(0xffffffff);
     }
+    Q_ASSERT(false);
+    return Qt::black;
 }
 
 
@@ -902,10 +906,74 @@ void run(const Param& param)
     }
 }
 
+void loadFonts()
+{
+    static const char *fontNames[] = {
+        "Pfennig.ttf",
+        0
+    };
+    QDir dir(":/fonts");
+    for (int i=0; fontNames[i]; ++i)
+        if (QFontDatabase::addApplicationFont(dir.absoluteFilePath(fontNames[i])) == -1)
+            throw runtime_error(string("Failed to load font '") + fontNames[i] + "'");
+}
+
+class ArgcArgv
+{
+public:
+    ArgcArgv(int argc, char *argv[]) :
+        m_args(argc),
+        m_argc(-1)
+    {
+        transform(argv, argv + argc, m_args.begin(), [](char *s) { return s; });
+    }
+
+    void insertArgument(size_t pos, const string& arg)
+    {
+        m_args.insert(m_args.begin() + pos, arg);
+        m_argc = -1;
+    }
+
+    int& argc() const
+    {
+        update();
+        m_argc_buf = m_argc;
+        return m_argc_buf;
+    }
+
+    char **argv() const
+    {
+        update();
+        return m_argv.data();
+    }
+
+private:
+    vector<string> m_args;
+    mutable int m_argc = -1;
+    mutable vector<char*> m_argv;
+    mutable int m_argc_buf = -1;
+
+    void update() const
+    {
+        if (m_argc == -1) {
+            m_argc = m_args.size();
+            m_argv.resize(m_argc+1);
+            transform(m_args.begin(), m_args.end(), m_argv.begin(), [](const string& s) {
+                return const_cast<char*>(s.c_str());
+            });
+            m_argv.back() = nullptr;
+        }
+    }
+};
+
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    ArgcArgv argcArgv(argc, argv);
+    argcArgv.insertArgument(1, "-platform");
+    argcArgv.insertArgument(2, "offscreen");
+    QGuiApplication app(argcArgv.argc(), argcArgv.argv());
     try {
+        loadFonts();
         Param param;
         string modeString = silver_bullets::enum_item_name(Mode::Summary);
 

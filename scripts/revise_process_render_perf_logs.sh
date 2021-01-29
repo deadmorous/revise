@@ -19,7 +19,6 @@ findLogs()
     local r=$1
     callback=$2
     ngpu=1
-#    input_files=()
     while :
     do
         nwrk=$(( $ngpu * $r ))
@@ -27,7 +26,6 @@ findLogs()
         input_file=$LOG_DIR/VsRendererDrawTimestamps-$ngpu-$nwrk-*.log
         if [ -f $input_file ]; then
             $callback $r $ngpu $nwrk $input_file
-#            input_files+=("$input_file")
         fi
 
         ngpu=$(( $ngpu * 2 ))
@@ -35,7 +33,6 @@ findLogs()
             break
         fi
     done
-#    echo $input_files
 }
 
 filter_file() {

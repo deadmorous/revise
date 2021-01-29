@@ -11,8 +11,12 @@ include_directories(${S3DMM_ROOT_DIR}/dist/include)
 
 aux_source_directory(. SOURCE_FILES)
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
 add_executable(${PROJECT_NAME}
         ${SOURCE_FILES}
+        vis_timestamps.qrc
         )
 
 target_link_libraries(${PROJECT_NAME}
