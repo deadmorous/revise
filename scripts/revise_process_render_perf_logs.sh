@@ -2,6 +2,10 @@
 
 set -e
 
+REVISE_SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export REVISE_ROOT_DIR=$(realpath $REVISE_SCRIPTS_DIR/..)
+PATH=$PATH:$REVISE_ROOT_DIR/third_parties/tsv-utils/bin
+
 if [ -z "$1" ]; then
     echo "clean.sh ERROR: '\$1' must contain directory name to be processed"
     exit
