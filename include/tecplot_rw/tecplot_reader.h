@@ -23,6 +23,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "tecplot_rw.h"
 #include <memory>
 #include <vector>
+#include <string>
 
 namespace tecplot_rw {
 
