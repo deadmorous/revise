@@ -44,74 +44,15 @@ REVISE_DATASET_DEFAULT=cascade
 read -p "Dataset name [$REVISE_DATASET_DEFAULT]: " -i 1 REVISE_DATASET
 REVISE_DATASET=${REVISE_DATASET:-$REVISE_DATASET_DEFAULT}
 echo REVISE_DATASET=$REVISE_DATASET
-case "$REVISE_DATASET" in
-    cascade)
-        REVISE_DATASET_TYPE=imm-g
-        REVISE_DATASET_ANIMATED=true
-        REVISE_DATASET_FIELD_NAME=rho_nu
-        REVISE_DATASET_MAX_LEVEL=3
-        REVISE_DATASET_WARMINGUP_TIME=20
-        ;;
-    hump)
-        REVISE_DATASET_TYPE=tec
-        ;;
-    mwave)
-        REVISE_DATASET_TYPE=coleso
-        REVISE_DATASET_GENERATED=true
-        ;;
-    *)
-        echo "WARNING: Unknown dataset"
-        read -p "Dataset type [bin]: " -i 1 REVISE_DATASET_TYPE
-        REVISE_DATASET_TYPE=${REVISE_DATASET_TYPE:-bin}
-        ;;
-esac
-echo REVISE_DATASET_TYPE=$REVISE_DATASET_TYPE
 
-# Download dataset if necessary
-if [ ! -f ${REVISE_DATASET}_downloaded ]
-then
-    echo Downloading dataset ${REVISE_DATASET}
-
-    # Download and extract ReVisE preprocessor input for the dataset
-    curl https://ftp.mpksoft.ru/revise_datasets/$REVISE_DATASET/${REVISE_DATASET}_revise_input.tar.gz --output ${REVISE_DATASET}_revise_input.tar.gz
-    tar -zxf ${REVISE_DATASET}_revise_input.tar.gz
-
-    # Download the dataset source data (mesh and field snapshots at 13 time layers)
-    # Note: file size may be large, download will likely take several hours
-    # cascade: file size is 26 GB
-    curl https://ftp.mpksoft.ru/revise_datasets/$REVISE_DATASET/${REVISE_DATASET}_src.tar.gz --output ${REVISE_DATASET}_src.tar.gz
-    tar -zxf ${REVISE_DATASET}_src.tar.gz
-
-    echo >${REVISE_DATASET}_downloaded
-fi
-
-if [ ! -f ${REVISE_DATASET}_preprocessed ]
-then
-    echo Preprocessing dataset ${REVISE_DATASET}
-
-    # Preprocess the dataset.
-    # This will result in the generation of ReVisE dataset for visualization
-    # cascade dataset:
-    #   Note: This step takes about 1.5 hours on a desktop system with
-    #   Intel i7-8700 CPU @3.20GHz (6 cores), 16 GB RAM.
-    #   Note: If you have more RAM, you might want to edit the script (see comments in it).
-    ./prep_${REVISE_DATASET}_revise.sh
-    echo >${REVISE_DATASET}_preprocessed
-fi
-
-
+# Download and preprocess source dataset, which results in a ReVisE dataset
+revise_prepare_dataset.sh $REVISE_DATASET
+source $REVISE_DATASET/description.sh
 
 # Prepare custom ReVisE Web server problem list files for testing the specified dataset
 revise_webdata.js install test_datasets.json
 revise_webdata.js clear
-if [ ! -z "$REVISE_DATASET_ANIMATED" ]
-then
-    # Note: For animated datasets, we follow directory name by a suffix, which is its type
-    revise_webdata.js add ${REVISE_DATASET}_revise.$REVISE_DATASET_TYPE $REVISE_DATASET
-else
-    # For non-animated datasets, we specify the dataset source file in the preprocessed directory.
-    revise_webdata.js add ${REVISE_DATASET}_revise/${REVISE_DATASET}.$REVISE_DATASET_TYPE $REVISE_DATASET
-fi
+revise_webdata.js add $REVISE_DATASET_PATH $REVISE_DATASET
 
 # Prepare custom ReVisE Web server configuration files for testing
 revise_hw_config.js install test_hw.json
