@@ -31,5 +31,5 @@ then
 fi
 
 # Add dataset to the list available to the Web server
-[ ! -z $(revise_webdata.js list |grep "^$REVISE_DATASET_NAME$") ] && revise_webdata.js remove $REVISE_DATASET_PATH
+[ ! -z $(revise_webdata.js list |grep "^$REVISE_DATASET_NAME$") ] && revise_webdata.js remove_by_title $REVISE_DATASET_NAME
 revise_webdata.js add "$REVISE_DATASET_PATH" "$REVISE_DATASET_NAME"
