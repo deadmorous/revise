@@ -11,29 +11,32 @@ then
     exit 1
 fi
 
+DATASET_FILENAME="${REVISE_DATASET}_source.tar.gz"
+DATASET_RELPATH="$REVISE_DATASET/$DATASET_FILENAME"
+
 # Download dataset if necessary
-if [ ! -f ${REVISE_DATASET}/data_downloaded ]
+if [ ! -f "${REVISE_DATASET}/data_downloaded" ]
 then
     echo "Downloading dataset ${REVISE_DATASET}"
 
     # Download and extract the dataset
-    DATASET_FILENAME=${REVISE_DATASET}_source.tar.gz
-    DOWNLOAD_LINK=https://ftp.mpksoft.ru/revise_datasets/$REVISE_DATASET/$DATASET_FILENAME
-    if [ -f "$DATASET_FILENAME" ]
+    DOWNLOAD_LINK="https://ftp.mpksoft.ru/revise_datasets/$DATASET_RELPATH"
+    if [ -f "$DATASET_RELPATH" ]
     then
         # Continue interrupted download
-        curl $DOWNLOAD_LINK -C $(stat --format=%s prepare_cascade "$DATASET_FILENAME") --output $DATASET_FILENAME
+        curl "$DOWNLOAD_LINK" -C $(stat --format=%s "$DATASET_RELPATH") --output "$DATASET_RELPATH"
     else
         # Download
-        curl $DOWNLOAD_LINK --output $DATASET_FILENAME
+        curl "$DOWNLOAD_LINK" --output "$DATASET_RELPATH"
     fi
-    echo >${REVISE_DATASET}/data_downloaded
+    echo >"${REVISE_DATASET}/data_downloaded"
 fi
 
 # Extract dataset if necessary
-if [ ! -f ${REVISE_DATASET}_extracted ]
+if [ ! -f "${REVISE_DATASET}/data_extracted" ]
 then
-    tar -zxf $DATASET_FILENAME
-    echo >${REVISE_DATASET}_extracted
-    # rm $DATASET_FILENAME
+    echo "Extracting dataset ${REVISE_DATASET}"
+    tar -zxf "$DATASET_RELPATH" -C "$REVISE_DATASET"
+    echo >"${REVISE_DATASET}/data_extracted"
+    # rm $DATASET_RELPATH
 fi

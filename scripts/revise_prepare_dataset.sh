@@ -23,7 +23,7 @@ then
     echo "Downloading dataset ${REVISE_DATASET} description"
 
     # Download and extract dataset description
-    curl https://ftp.mpksoft.ru/revise_datasets/${REVISE_DATASET}/${REVISE_DATASET}_description.tar.gz | tar -zx
+    curl https://ftp.mpksoft.ru/revise_datasets/${REVISE_DATASET}/${REVISE_DATASET}_description.tar.gz | tar -zx -C ${REVISE_DATASET}
     echo >${REVISE_DATASET}/description_ready
 fi
 
