@@ -12,7 +12,7 @@ then
 fi
 
 # Set up environment, if necessary
-[ -z "$(which s3dmm_prep)" ] && source $( dirname "${BASH_SOURCE[0]}" )/env.sh
+source $( dirname "${BASH_SOURCE[0]}" )/env.sh
 
 # Create dataset direcory, if necessary
 mkdir -p ${REVISE_DATASET}

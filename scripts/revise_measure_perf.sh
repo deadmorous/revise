@@ -2,14 +2,10 @@
 
 set -e
 
-# Set up ReVisE environment
-if [ -z "$REVISE_ROOT_DIR" ]
-then
-    echo "Please specify the full path to the directory where ReVisE has been cloned"
-    echo "in the REVISE_ROOT_DIR environment variable"
-    exit 1
-fi
-source $REVISE_ROOT_DIR/scripts/env.sh
+[ -z "$1" ] && REVISE_DATASET_DEFAULT=cascade || REVISE_DATASET="$1"
+
+# Set up environment, if necessary
+source $( dirname "${BASH_SOURCE[0]}" )/env.sh
 
 # Guess number of GPUs installed on the system
 if [ ! -z $(which nvidia-smi) ]
@@ -39,26 +35,30 @@ echo REVISE_MACHINE=$REVISE_MACHINE
 REVISE_ASM_THREADS=$((2*$REVISE_TOTAL_GPUS))
 echo REVISE_ASM_THREADS=$REVISE_ASM_THREADS
 
-# Input dataset name and type
-REVISE_DATASET_DEFAULT=cascade
-read -p "Dataset name [$REVISE_DATASET_DEFAULT]: " -i 1 REVISE_DATASET
-REVISE_DATASET=${REVISE_DATASET:-$REVISE_DATASET_DEFAULT}
+# Input dataset name
+if [ -z "$REVISE_DATASET" ]
+then
+    read -p "Dataset name [$REVISE_DATASET_DEFAULT]: " -i 1 REVISE_DATASET
+    REVISE_DATASET=${REVISE_DATASET:-$REVISE_DATASET_DEFAULT}
+fi
 echo REVISE_DATASET=$REVISE_DATASET
 
 # Download and preprocess source dataset, which results in a ReVisE dataset
 revise_prepare_dataset.sh $REVISE_DATASET
+
+# Read dataset description
 source $REVISE_DATASET/description.sh
 
 # Prepare custom ReVisE Web server problem list files for testing the specified dataset
 revise_webdata.js install test_datasets.json
-revise_webdata.js clear
-revise_webdata.js add $REVISE_DATASET_PATH $REVISE_DATASET
+revise_install_dataset.sh $REVISE_DATASET
 
 # Prepare custom ReVisE Web server configuration files for testing
 revise_hw_config.js install test_hw.json
 revise_hw_config.js set nodes 1
 revise_hw_config.js set assemble_threads_per_node $REVISE_ASM_THREADS
 revise_hw_config.js set measure_time true
+
 
 
 # Measure performance
