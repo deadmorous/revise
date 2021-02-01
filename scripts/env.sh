@@ -28,7 +28,14 @@ then
         >&2 echo "ERROR: s3dmm binary directory does not exist: $REVISE_BINARY_DIR"
         return 1
     fi
+
     export REVISE_BINARY_DIR
+    export REVISE_SCRIPTS_DIR
+    export REVISE_CUSTOM_SCRIPTS_DIR
+    export REVISE_BUILD_DIR
+    export REVISE_BUILD_TYPE
+    export REVISE_BUILD_DIR_DEBUG
+    export REVISE_BUILD_DIR_RELEASE
 
     export PATH=$REVISE_BINARY_DIR:$REVISE_SCRIPTS_DIR:$PATH
     export LD_LIBRARY_PATH=$REVISE_ROOT_DIR/dist/lib:$REVISE_BINARY_DIR${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
