@@ -7,7 +7,7 @@ REVISE_DATASET=$1
 if [ -z "${REVISE_DATASET}" ]
 then
     echo "Please specify the revise dataset name in first argument."
-    echo "Available datasets names are: cascade, hump, mwave, sphere_1M."
+    echo "Available dataset names are: cascade, hump, mwave, sphere_1M."
     exit 1
 fi
 
