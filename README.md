@@ -4,7 +4,27 @@ TODO
 # Installing ReVisE
 
 ## Install prerequisites
-TODO
+
+### Supported Linux distributions
+
+- Ubuntu (20.10)
+- Debian Testing (10)
+- Arch Linux
+
+### Software requirements
+
+ - cmake >= 3.18.1
+ - git
+ - clang >= 9.0 / gcc >= 7.4
+ - Qt >= 5.10 including QtSVG, QtWidgets
+ - Node.js
+ - npm
+ - D language
+ - CUDA Toolkit
+
+https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&target_distro=Debian&target_version=10&target_type=deblocal
+
+
 
 ## Clone, bootstrap, and build ReVisE
 
@@ -16,7 +36,7 @@ First of all, open a Linux terminal and switch to a directory of your choice, wh
 git clone https://github.com/deadmorous/revise.git
 cd revise
 
-# Optionally set up Qt, e.g.
+# Optionally set up Qt, e.g. 
 # export QT_SELECT=qt5-11-2
 #
 # Run bootstrap.sh
@@ -65,6 +85,26 @@ Once the server is ready, open your Web browser and enter the following URL in t
 http://localhost:3000/
 ```
 You should see TeVisE GUI in the browser and be able to choose among example problems.
+
+# Docker
+
+Building image by yourself.
+
+In repo run:
+```
+docker build -t <name>:<tag> .
+```
+
+
+Download docker image to your machine:
+```
+docker pull deadmorous/revise:v1
+```
+
+Run docker image and login in it:
+docker run -ti --rm -v <HOME_PATH>:<HOME_PATH> -p 3000:3000 -p 1234:1234 deadmorous/revise:v1  /bin/bash
+
+
 
 # Configuring hardware resources
 TODO
