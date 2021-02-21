@@ -99,10 +99,10 @@ As soon as you see this message, do the following.
 - Open Web browser (we use Chrome and Firefox, other browser should work too).
 - type localhost:3000 in the address bar and press Enter.
 - Maximize browser window.
-- Select problem -> choose dataset name.
+- Select problem -> choose dataset name (${REVISE_DATASET}).
 - Select field -> ${REVISE_DATASET_FIELD_NAME}.
 - Settings -> Reset data; wait a few seconds.
-- Settings -> set fovY to 11; Fields are shown as relative values; Time interval, ms = 1; Ok.
+- Settings -> set fovY to ${REVISE_DATASET_CAMERA_FOVY}; Fields are shown as relative values; Time interval, ms = 1; Ok.
 - Select Visualization mode -> MIP.
 - Move to the left the slider below the visualization mode selector.
 - Once you have done the above steps, go to the terminal and press Ctrl+C (ONE TIME!).

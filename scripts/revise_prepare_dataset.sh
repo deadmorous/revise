@@ -30,6 +30,12 @@ fi
 # Prepare dataset, if necessary
 if [ ! -f ${REVISE_DATASET}/revise_ready ]
 then
+    source ${REVISE_DATASET}/description.sh
+    RAM_GB_TOTAL=$(free --giga |awk 'FNR==2 {print $2}')
+    if (( RAM_GB_TOTAL < REVISE_DATASET_PREP_RAM )); then
+        echo "Not enough memory for preprocessing: need $REVISE_DATASET_PREP_RAM GB, have $RAM_GB_TOTAL GB"
+        exit 1
+    fi
     if [ -f ${REVISE_DATASET}/generate.sh ]
     then
         ${REVISE_DATASET}/generate.sh
