@@ -60,6 +60,26 @@ revise_hw_config.js set assemble_threads_per_node $REVISE_ASM_THREADS
 revise_hw_config.js set measure_time true
 
 
+# Computes the total number of measurements, basing on the total number of GPUs
+mes_count() {
+    local n=1
+    local result=0
+    while (( n <= REVISE_TOTAL_GPUS ))
+    do
+        result=$((result+3)) # 1, 2, and 4 workers per GPU
+        if (( n < REVISE_TOTAL_GPUS ))
+        then
+            n=$((n*2))
+            if (( n > REVISE_TOTAL_GPUS ))
+            then
+                n=$REVISE_TOTAL_GPUS
+            fi
+        else
+            break
+        fi
+    done
+    echo $result
+}
 
 # Measure performance
 echo Starting performance measurement for dataset ${REVISE_DATASET}
@@ -69,7 +89,7 @@ LOGDIR=log/$REVISE_MACHINE/$REVISE_DATASET
 mkdir -p $LOGDIR
 
 REVISE_GPUS=1
-TOTAL_MEASUREMENT_COUNT=$(( REVISE_TOTAL_GPUS * 3 ))
+TOTAL_MEASUREMENT_COUNT=$(mes_count)
 CURRENT_MEASUREMENT_NUMBER=1
 while (( REVISE_GPUS <= REVISE_TOTAL_GPUS ))
 do
