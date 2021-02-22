@@ -77,18 +77,23 @@ do
 
         REVISE_WORKERS=$(( REVISE_WORKERS_PER_GPU * REVISE_GPUS ))
 
-        # Specify hardware configuration to use by ReVisE
-        revise_hw_config.js set gpus_per_node $REVISE_GPUS
-        revise_hw_config.js set render_threads_per_node $REVISE_WORKERS
-
-        # Prepare Web browser, if necessary
-        if [ -z "$REVISE_WEBCLIENT_INITIALIZED" ]
+        if [ -f "$LOGDIR/VsRendererDrawTimestamps-$REVISE_GPUS-$REVISE_WORKERS-$REVISE_ASM_THREADS.log" ]
         then
-            echo "Prepare Web browser for measuring ReVisE performance.
+            echo "Measurement $CURRENT_MEASUREMENT_NUMBER of $TOTAL_MEASUREMENT_COUNT is already done, skipping."
+        else
+
+            # Specify hardware configuration to use by ReVisE
+            revise_hw_config.js set gpus_per_node $REVISE_GPUS
+            revise_hw_config.js set render_threads_per_node $REVISE_WORKERS
+
+            # Prepare Web browser, if necessary
+            if [ -z "$REVISE_WEBCLIENT_INITIALIZED" ]
+            then
+                echo "Prepare Web browser for measuring ReVisE performance.
 Please follow instructions below."
-            read -p "Press enter to continue"
-            echo "-------- 8< --------"
-            echo "Web server will be started now. When it starts for the first time,
+                read -p "Press Enter to continue"
+                echo "-------- 8< --------"
+                echo "Web server will be started now. When it starts for the first time,
 necessary dependencies are downloaded and installed,
 and two ReVisE modules that interoperate with node.js are built.
 This process takes a few seconds. When the server is ready, it displays the message
@@ -110,11 +115,11 @@ As soon as you see this message, do the following.
 You may want to copy the above instructions to a text file
 or take a screenshot, because the page will scroll soon.
 "
-            read -p "Press enter now to start the Web server"
-            revise_web.sh
-            echo "-------- 8< --------"
-            read -p "Now go the Web browser and refresh the window; then return to the terminal and press Enter."
-            echo "ReVisE Web server will now start again. After that, do the following.
+                read -p "Press Enter now to start the Web server"
+                revise_web.sh
+                echo "-------- 8< --------"
+                read -p "Now go the Web browser and refresh the window; then return to the terminal and press Enter."
+                echo "ReVisE Web server will now start again. After that, do the following.
 - Go to the Web browser.
 - Refresh browser window.
 - Colormap settings -> Ok.
@@ -122,21 +127,21 @@ or take a screenshot, because the page will scroll soon.
 You may want to copy the above instructions to a text file
 or take a screenshot, because the page will scroll soon.
 "
-            read -p "Press enter now to start the Web server"
-            revise_web.sh
+                read -p "Press Enter now to start the Web server"
+                revise_web.sh
+                echo "-------- 8< --------"
+                echo "Web browser configuration is complete."
+                read -p "Now go the Web browser and refresh the window; then return to the terminal and press Enter."
+                REVISE_WEBCLIENT_INITIALIZED=true
+            fi
+
+            # Remove timestamp log if it exists
+            rm -f $REVISE_ROOT_DIR/src/webserver/VsRendererDrawTimestamps.log
+
+            # Do performance measurement for specific configuration
             echo "-------- 8< --------"
-            echo "Web browser configuration is complete."
-            read -p "Now go the Web browser and refresh the window; then return to the terminal and press Enter."
-            REVISE_WEBCLIENT_INITIALIZED=true
-        fi
-
-        # Remove timestamp log if it exists
-        rm -f $REVISE_ROOT_DIR/src/webserver/VsRendererDrawTimestamps.log
-
-        # Do performance measurement for specific configuration
-        echo "-------- 8< --------"
-        echo "Performance measurement for REVISE_GPUS=$REVISE_GPUS, REVISE_WORKERS=$REVISE_WORKERS"
-        echo "Web server will start now. Then please follow instructions below.
+            echo "Performance measurement for REVISE_GPUS=$REVISE_GPUS, REVISE_WORKERS=$REVISE_WORKERS"
+            echo "Web server will start now. Then please follow instructions below.
 - Go to the Web browser
 - Refresh browser window
 - Wait till \"Frame level: $REVISE_DATASET_MAX_LEVEL\" is reported in the lower left corner of the window.
@@ -145,13 +150,20 @@ or take a screenshot, because the page will scroll soon.
 - Go to terminal and press Ctrl+C (ONE TIME!) to stop the Web server.
 You may want to copy the above instructions to a text file
 or take a screenshot, because the page will scroll soon."
-        read -p "Press enter now to start the Web server"
-        revise_web.sh
-        echo "-------- 8< --------"
-        # Move the timestamp log file to the log directory:
-        mv $REVISE_ROOT_DIR/src/webserver/VsRendererDrawTimestamps.log $LOGDIR/VsRendererDrawTimestamps-$REVISE_GPUS-$REVISE_WORKERS-$REVISE_ASM_THREADS.log
-        echo "Measurement $CURRENT_MEASUREMENT_NUMBER of $TOTAL_MEASUREMENT_COUNT is complete."
-        read -p "Now go the Web browser and refresh the window; then return to the terminal and press Enter."
+            read -p "Press Enter now to start the Web server"
+            revise_web.sh
+            echo "-------- 8< --------"
+            read -p "Now go the Web browser and refresh the window; then return to the terminal and press Enter."
+            read -p "If something went wrong with this measurement, press Ctrl+C now and restart the script,
+and when prompted to prepare Web browser, press Ctrl+C after web browser starts
+(two times in total) - nothing need to be done since the browser is already prepared.
+Measurements will be continued, and completed ones will be skipped.
+---
+If everything is fine with this measurement, press Enter."
+            # Move the timestamp log file to the log directory:
+            mv $REVISE_ROOT_DIR/src/webserver/VsRendererDrawTimestamps.log $LOGDIR/VsRendererDrawTimestamps-$REVISE_GPUS-$REVISE_WORKERS-$REVISE_ASM_THREADS.log
+            echo "Measurement $CURRENT_MEASUREMENT_NUMBER of $TOTAL_MEASUREMENT_COUNT is complete."
+        fi
 
         # Increase measurement number
         CURRENT_MEASUREMENT_NUMBER=$(( CURRENT_MEASUREMENT_NUMBER + 1 ))
