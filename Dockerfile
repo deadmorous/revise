@@ -3,16 +3,17 @@ MAINTAINER ReVisE https://github.com/deadmorous/revise
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 curl ca-certificates && \
+    gnupg2 curl ca-certificates xz-utils && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/debian10/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/debian10/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
+    curl -fsS https://dlang.org/install.sh | bash -s dmd && \
     apt-get purge --autoremove -y curl \
     && rm -rf /var/lib/apt/lists/*
 
 ENV CUDA_VERSION 11.2
 ENV CUDA_HOME /usr/local/cuda
-ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64
-ENV PATH $PATH:$CUDA_HOME/bin
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:/root/dlang/dmd-2.095.1/linux/lib64
+ENV PATH $PATH:$CUDA_HOME/bin:/root/dlang/dmd-2.095.1/linux/bin64
 ENV CUDA_PATH $CUDA_HOME
 
 # For libraries in the cuda-compat-* package: https://docs.nvidia.com/cuda/eula/index.html#attachment-a
@@ -65,7 +66,7 @@ RUN apt-get update \
 COPY . /src
 WORKDIR /src
 
-RUN ./bootstrap.sh --with-tsv-util \
+RUN  ./bootstrap.sh --with-tsv-utils \
     && ./build.sh
 
 FROM base as runtime
@@ -78,6 +79,7 @@ COPY --from=builder /src/include ./include
 COPY --from=builder /src/scripts ./scripts
 COPY --from=builder /src/dist ./dist
 COPY --from=builder /src/builds ./builds
+COPY --from=builder /src/third_parties/tsv-utils/bin ./third_parties/tsv-utils/bin
 
 RUN apt-get update \
     && apt-get install -y \
