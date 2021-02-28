@@ -1,5 +1,6 @@
 * {
   font-size: medium;
+  font-family: sans-serif;
 }
 
 h {
@@ -103,7 +104,6 @@ input[type=text] {
   padding: 0 8px;
   font-size: small;
   text-decoration: none;
-  font-family: sans-serif;
 }
 
 #sources-link:hover {
