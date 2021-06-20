@@ -60,6 +60,8 @@ RUN apt-get update \
         libqt5svg5-dev \
         libglew-dev \
         npm \
+        libcgns-dev \
+        libhdf5-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* ./*.deb
 
@@ -91,6 +93,10 @@ RUN apt-get update \
         libglew-dev \
         npm \
         libboost-all-dev \
+        libcgns-dev \
+        libhdf5-dev \
+        curl \
+        procps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* ./*.deb
 
