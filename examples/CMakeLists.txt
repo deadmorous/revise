@@ -22,3 +22,7 @@ add_subdirectory(use_ws_sendframe)
 add_subdirectory(render_graph_dot)
 add_subdirectory(test_blend_image_part)
 add_subdirectory(vis_timestamps)
+
+if (S3DMM_ENABLE_CGNS)
+    add_subdirectory(to_cgns)
+endif()

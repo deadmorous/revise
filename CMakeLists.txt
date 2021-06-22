@@ -31,6 +31,7 @@ option(S3DMM_ENABLE_WORKER_TIME_ESTIMATION "Enable worker time estimation and du
 option(S3DMM_ENABLE_FRAME_IMAGE_PARTS_SAVING "Enable image parts saving for each worker/assembly" OFF)
 
 option(S3DMM_ENABLE_VTK "Enable code relying on the VTK library" OFF)
+option(S3DMM_ENABLE_CGNS "Enable code relying on the CGNS library" OFF)
 
 if (!S3DMM_ENABLE_GUI)
     message(FATAL "S3DMM_ENABLE_REN is enabled, but S3DMM_ENABLE_GUI is disabled. Please enable S3DMM_ENABLE_GUI")
@@ -55,6 +56,10 @@ endif()
 
 if(S3DMM_ENABLE_VTK)
     add_definitions(-DS3DMM_ENABLE_VTK)
+endif()
+
+if(S3DMM_ENABLE_CGNS)
+    add_definitions(-DS3DMM_ENABLE_CGNS)
 endif()
 
 list(APPEND REQUIRED_BOOST_LIBRARIES program_options filesystem)
