@@ -11,6 +11,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/algorithm/transform.hpp>
+#include <boost/range/algorithm/find.hpp>
 
 #include <cgnslib.h>
 
@@ -49,20 +50,6 @@ constexpr DataType_t cgDataType<double>() noexcept {
     return RealDouble;
 }
 
-ElementType_t cgElementType(MeshElementType t) noexcept
-{
-    switch (t) {
-    case MeshElementType::Triangle:
-        return TRI_3;
-    case MeshElementType::Quad:
-        return QUAD_4;
-    case MeshElementType::Tetrahedron:
-        return TETRA_4;
-    case MeshElementType::Hexahedron:
-        return HEXA_8;
-    }
-}
-
 void writeZoneNodes(int out_file, int out_base, int out_zone, const MeshDataProvider::Zone& zone, size_t dim)
 {
     constexpr auto dataType = cgDataType<real_type>();
@@ -77,27 +64,70 @@ void writeZoneNodes(int out_file, int out_base, int out_zone, const MeshDataProv
     }
 }
 
+pair<ElementType_t, unsigned int> meshElementSubtype(MeshElementType elementType, unsigned int elementPattern)
+{
+    switch (elementType) {
+    case MeshElementType::Triangle:
+        if (elementPattern == 0)
+            return { TRI_3, 3 };
+        break;
+    case MeshElementType::Quad:
+        if (elementPattern == 0)
+            return { QUAD_4, 4 };
+        else if (elementPattern == 1)
+            return { TRI_3, 3 };
+        break;
+    case MeshElementType::Tetrahedron:
+        if (elementPattern == 0)
+            return { TETRA_4, 4 };
+    case MeshElementType::Hexahedron:
+        if (elementPattern == 0)
+            return { HEXA_8, 8 };
+        else if (elementPattern == 3)
+            return { PENTA_6, 6 };
+        else if (elementPattern == 7)
+            return { PYRA_5, 5 };
+        break;
+    }
+    BOOST_ASSERT(false);
+    return { ElementTypeNull, 0 };
+}
+
 void writeZoneElements(int out_file, int out_base, int out_zone, const MeshDataProvider::Zone& zone)
 {
-    auto elementCount = zone.elementCount();
-    auto elementType = cgElementType(zone.elementType());
+    auto zoneElementType = zone.elementType();
     auto elementRange = zone.elements();
-    auto elementNodeCount = elementRange.front().size();
-    std::vector<cgsize_t> connectivity(elementCount*elementNodeCount);
-    auto ptr = connectivity.data();
+    map<unsigned int, std::vector<cgsize_t>> connectivity;  // key = element pattern
     for (auto e : elementRange) {
         BOOST_ASSERT(e.size() == elementNodeCount);
-        boost::range::copy(e, ptr);
-        ptr += elementNodeCount;
+        auto elementPattern = 0;
+        for (auto inode : e)
+            if (inode == ~0u)
+                elementPattern = (elementPattern<<1) | 1;
+        auto [subtype, size] = meshElementSubtype( zoneElementType, elementPattern );
+        auto& nodeNumbers = connectivity[elementPattern];
+        auto dstSize = nodeNumbers.size();
+        nodeNumbers.resize(dstSize + size);
+        std::copy(e.begin(), e.begin()+size, nodeNumbers.begin()+dstSize);
     }
-    // Indices in connectivity start with one!
-    boost::range::transform(
-        connectivity, connectivity.begin(),
-        [](auto x) { return x + 1; });
-    CGCALL(cg_section_write,
-           out_file, out_base, out_zone,
-           "Elem", elementType, 1, elementCount, 0, connectivity.data());
-
+    auto totalElementCount = 0;
+    for (auto& item : connectivity) {
+        auto& [elementPattern, nodeNumbers] = item;
+        // Indices in connectivity start with one!
+        boost::range::transform(
+            nodeNumbers, nodeNumbers.begin(),
+            [](auto x) { return x + 1; });
+        auto [subtype, size] = meshElementSubtype( zoneElementType, elementPattern );
+        BOOST_ASSERT( nodeNumbers.size() % size == 0 );
+        auto elementCount = nodeNumbers.size() / size;
+        auto secName = "Elem_" + to_string(elementPattern);
+        CGCALL(cg_section_write,
+               out_file, out_base, out_zone,
+               secName.c_str(), subtype,
+               totalElementCount+1, totalElementCount+elementCount,
+               0, nodeNumbers.data());
+        totalElementCount += elementCount;
+    }
 }
 
 void writeZoneFields(
@@ -200,7 +230,7 @@ void run(int argc, char* argv[])
     auto fieldNames = mainMeshProvider.variables();
     for (auto zone : mainMeshProvider.zones(cache, fieldVar))
     {
-        auto zoneName = string("zone_") + to_string(zoneIds.size());
+        auto zoneName = string("zone_") + to_string(izone);
         REPORT_PROGRESS_STAGE(zoneName);
         writeZoneFields(out_file, out_base, zoneIds.at(izone), zone, fieldVar, fieldNames);
         ++izone;
