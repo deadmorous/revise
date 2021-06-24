@@ -125,7 +125,7 @@ public:
         Vec3 p;
         auto pr = param(p, x);
         if (pr.second && pr.first) {
-            constexpr const real_type _0125 = make_real(0.25);
+            constexpr const real_type _0125 = make_real(0.125);
             constexpr const real_type _1 = make_real(1);
             auto _1_plus_xi = _1 + p[0];
             auto _1_minus_xi = _1 - p[0];
@@ -161,7 +161,7 @@ public:
             const ElementNodes& elementNodalData,
             const Vec3& p)
     {
-        constexpr const real_type _0125 = make_real(0.25);
+        constexpr const real_type _0125 = make_real(0.125);
         constexpr const real_type _1 = make_real(1);
         auto _1_plus_xi = _1 + p[0];
         auto _1_minus_xi = _1 - p[0];
