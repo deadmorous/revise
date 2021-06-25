@@ -48,9 +48,24 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
             this.picker.set(rgb.r, rgb.g, rgb.b);
         }
         _init() {
-            this.jquery.attr("readonly", true);
-            this.picker.on('change', this._onChange.bind(this));
-            this.picker.on('enter', this._onRaise.bind(this));
+            let self = this
+            let picker = this.picker;
+            picker.on('change', this._onChange.bind(this));
+            picker.on('enter', this._onRaise.bind(this));
+
+            function onChange() {
+                let rgbStr = this.value;
+                if (rgbStr.match(/^#[0-9a-fA-F]{6}$/))
+                {
+                    picker.set.apply(picker, CP.HEX(rgbStr)).enter();
+                    let rgb = objects.Rgb.fromSharpString(rgbStr);
+                    self.setColor(rgb);
+                    self.dispatchEvent(new Event("change"));
+                }
+            }
+            ['cut', 'input', 'keyup', 'paste'].forEach(e => {
+                picker.source.addEventListener(e, onChange);
+            });  
         }
         _onChange(r, g, b) {
             let rgb = new objects.Rgb(r, g, b);
