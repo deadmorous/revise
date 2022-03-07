@@ -175,7 +175,9 @@ __global__ void renderKernel(RenderKernelParam p)
             in.step = in.ray * ((in.tauExit - in.tauEnter) / in.sampleCount);
             in.pos = rayPoint(p.eye.pos, in.ray, in.tauEnter);
             auto texHalfSize = p.cube.halfSize + 0.5*in.texelSize;
-            in.cubeOrigin = p.cube.center - float3{texHalfSize, texHalfSize, texHalfSize};
+            in.cubeOrigin = p.cube.center - float3{static_cast<float>(texHalfSize),
+                    static_cast<float>(texHalfSize),
+                    static_cast<float>(texHalfSize)};
             in.texCoordFactor = in.n / (2*texHalfSize);
 
 #if RENDER_TYPE == NORMAL_RENDER
