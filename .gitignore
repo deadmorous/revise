@@ -3,4 +3,4 @@ CMakeLists.txt.user
 /builds
 /dist
 .vscode/
-
+.idea/
