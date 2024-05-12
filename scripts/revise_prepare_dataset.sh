@@ -11,6 +11,10 @@ then
     exit 1
 fi
 
+shift
+# Note: Remaining arguments are supplied to description/prepare/generate scripts.
+
+
 # Set up environment, if necessary
 source $( dirname "${BASH_SOURCE[0]}" )/env.sh
 
@@ -27,10 +31,11 @@ then
     echo >${REVISE_DATASET}/description_ready
 fi
 
+source ${REVISE_DATASET}/description.sh "$@"
+
 # Prepare dataset, if necessary
-if [ ! -f ${REVISE_DATASET}/revise_ready ]
+if [ ! -f "${REVISE_DATASET}/${REVISE_DATASET_NAME}#revise_ready" ]
 then
-    source ${REVISE_DATASET}/description.sh
     RAM_GB_TOTAL=$(free --giga |awk 'FNR==2 {print $2}')
     if (( RAM_GB_TOTAL < REVISE_DATASET_PREP_RAM )); then
         echo "Not enough memory for preprocessing: need $REVISE_DATASET_PREP_RAM GB, have $RAM_GB_TOTAL GB"
@@ -38,12 +43,12 @@ then
     fi
     if [ -f ${REVISE_DATASET}/generate.sh ]
     then
-        ${REVISE_DATASET}/generate.sh
+        ${REVISE_DATASET}/generate.sh "$@"
     else
         revise_download_dataset.sh ${REVISE_DATASET}
-        ${REVISE_DATASET}/prepare.sh
+        ${REVISE_DATASET}/prepare.sh "$@"
     fi
-    echo >${REVISE_DATASET}/revise_ready
+    echo >"${REVISE_DATASET}/${REVISE_DATASET_NAME}#revise_ready"
 fi
 
-echo "Dataset ${REVISE_DATASET} is ready for visualization"
+echo "Dataset ${REVISE_DATASET}/${REVISE_DATASET_NAME} is ready for visualization"
