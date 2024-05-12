@@ -35,6 +35,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include <stdexcept>
 #include <mutex>
+#include <optional>
 
 #include "filename_util.hpp"
 
