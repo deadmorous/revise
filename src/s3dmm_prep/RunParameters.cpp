@@ -47,6 +47,7 @@ RunParameters RunParameters::parse(int argc, char *argv[])
             ("mode", po_value(processingModeString), enumHelp<ProcessingMode>("Processing mode"));
     po::options_description po_mesh_proc("Mesh processing options");
     po_mesh_proc.add_options()
+            ("output_dir", po_value(result.outputDirectory), "Output directory")
             ("mesh_file", po::value(&result.meshFileName), "Mesh file name")
             ("depth", po_value(result.metadataBlockDepth), "Maximal depth within one block")
             ("max_full_level", po_value(result.metadataMaxFullLevel), "Maximal full metadata level")
@@ -58,7 +59,6 @@ RunParameters RunParameters::parse(int argc, char *argv[])
             ("btec", po_value(result.saveBoundaryTecplot), "Save boundary to a tecplot file")
             ("exact_problem_id", po_value(result.exactProblemId), "Identifier of exact solution to generate")
             ("exact_config", po_value(result.exactConfigFileName), "Configuration file describing an exact solution to generate")
-            ("exact_output_dir", po_value(result.exactOutputDirectory), "Output directory for the exact solution to generate")
             ("exact_cells", po_value(result.exactCellCount), "Domain cell count for the exact solution to generate")
             ("exact_time_steps", po_value(result.exactTimeStepCount), "Time step count for the exact solution to generate")
             ("print_exact_config", "Print exact solution config (example if no file specified)");

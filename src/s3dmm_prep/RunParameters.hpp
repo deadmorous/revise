@@ -35,6 +35,11 @@ struct RunParameters
     unsigned int metadataMaxFullLevel = 0;
     unsigned int metadataMaxLevel = 20;
 
+    // General output-specific parameters
+
+    // If empty, output is generated in the directoru of input data
+    std::string outputDirectory;
+
     // Mesh processing specific parameters
     std::string meshFileName;
     s3dmm::real_type refinerParam = s3dmm::make_real(1);
@@ -45,7 +50,6 @@ struct RunParameters
     // Exact solution specific parameters
     std::string exactProblemId;
     std::string exactConfigFileName;
-    std::string exactOutputDirectory;
     std::string exactCellCount;
     std::string exactTimeStepCount;
     bool printExactConfig = false;

@@ -42,8 +42,9 @@ void metadataInfoTemplate(const RunParameters& param)
     using BT = typename Metadata<N>::BT;
     using BTN = BlockTreeNodes<N, BT>;
 
-    auto mainMeshFileName = firstOutputFrameFileName(param.meshFileName).first;
-    auto metadataFileName = mainMeshFileName + ".s3dmm-meta";
+    auto outBaseName = s3dmmBaseName(param.meshFileName, param.outputDirectory);
+    auto mainOutFileName = firstOutputFrameFileName(outBaseName).first;
+    auto metadataFileName = mainOutFileName + ".s3dmm-meta";
     ifstream s(metadataFileName, ios::binary);
     Metadata<N> md(s);
     auto& bt = md.blockTree();

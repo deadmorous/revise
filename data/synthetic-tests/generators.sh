@@ -53,12 +53,12 @@ gen_coleso () {
 # output_dir=$output_dir
 
 # GENERATE &  PREPROCESS
-s3dmm_prep --mode coleso --exact_config $GENERATORS_DIR/config/$type.json --exact_cells $cells --exact_time_steps $tn --depth $depth --max_full_level $max_level --exact_output_dir $output_dir -t $ncpu
+s3dmm_prep --mode coleso --exact_config $GENERATORS_DIR/config/$type.json --exact_cells $cells --exact_time_steps $tn --depth $depth --max_full_level $max_level --output_dir $output_dir -t $ncpu
 
 
 " >> commands.log
 
-        s3dmm_prep --mode coleso --exact_config $GENERATORS_DIR/config/$type.json --exact_cells $cells --exact_time_steps $tn --depth $depth --max_full_level $max_level --exact_output_dir $output_dir -t $ncpu |& tee log/prep/$basename.log
+        s3dmm_prep --mode coleso --exact_config $GENERATORS_DIR/config/$type.json --exact_cells $cells --exact_time_steps $tn --depth $depth --max_full_level $max_level --output_dir $output_dir -t $ncpu |& tee log/prep/$basename.log
     fi
 }
 

@@ -95,5 +95,34 @@ inline std::pair<std::string, bool> firstOutputFrameFileName(const std::string& 
         throw invalid_argument(string("Failed to find input file(s) matching the specified name '") + baseName + "'");
 }
 
+inline std::string s3dmmBaseName(const std::string& inputBaseName, const std::string& outputDirectory)
+{
+    using namespace std::experimental::filesystem;
+
+    if (outputDirectory.empty())
+        return inputBaseName;
+
+    if (!exists(outputDirectory) && !create_directories(outputDirectory))
+    {
+        std::ostringstream oss;
+        oss << "Failed to create otuput directory '" << outputDirectory;
+        throw std::runtime_error(oss.str());
+    }
+
+    auto hasTimeSteps =
+        baseNameCorrespondsToDirectory(inputBaseName);
+
+    if (!hasTimeSteps && !baseNameCorrespondsToFile(inputBaseName))
+        throw std::invalid_argument(
+            "Failed to find input file(s) matching the specified name '" + inputBaseName + "'");
+
+    auto [dir, stem, ext] = splitFileName(inputBaseName);
+
+    if (hasTimeSteps)
+        return outputDirectory + ext;
+    else
+        return path(outputDirectory) / (stem + ext);
+}
+
 } // s3dmm
 

@@ -365,6 +365,7 @@ public:
                     "Im_rho", "Im_rho_x_u", "Im_rho_x_v", "Im_rho_x_w", "Im_E",
                 };
         }
+        __builtin_unreachable();
     }
 
     unsigned int fieldCount() const {
@@ -476,8 +477,8 @@ void processExactSolutionTemplate(const RunParameters& param)
     auto hasParam = [](const string& param) {
         return !(param.empty() || param == "-");
     };
-    if (hasParam(param.exactOutputDirectory))
-        exactParam.outputDirectory = param.exactOutputDirectory;
+    if (hasParam(param.outputDirectory))
+        exactParam.outputDirectory = param.outputDirectory;
     if (hasParam(param.exactCellCount))
         exactParam.cell_count = ScalarOrMultiIndex<N, unsigned int>::fromMultiIndex(
             parseMultiIndexInitializer<N, unsigned int>(param.exactCellCount));

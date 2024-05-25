@@ -45,7 +45,7 @@ using namespace std;
 
 namespace {
 
-void saveMeshBoundaryToTecplot(const s3dmm::MeshBoundaryExtractor& bx, const string& mainMeshFileName)
+void saveMeshBoundaryToTecplot(const s3dmm::MeshBoundaryExtractor& bx, const string& mainOutFileName)
 {
     using namespace s3dmm;
     REPORT_PROGRESS_STAGES();
@@ -53,7 +53,7 @@ void saveMeshBoundaryToTecplot(const s3dmm::MeshBoundaryExtractor& bx, const str
     auto izone = 0;
     for (auto& zone : bx.zones()) {
         ostringstream oss;
-        oss << mainMeshFileName + ".z-" << izone << "-boundary.tec";
+        oss << mainOutFileName + ".z-" << izone << "-boundary.tec";
         auto bfname = oss.str();
         switch (zone.elementType()) {
         case MeshElementType::Hexahedron: {
@@ -162,9 +162,9 @@ void processMeshTemplate(const RunParameters& param)
 
     }
 
-    string mainMeshFileName;
-    bool hasTimeSteps;
-    tie(mainMeshFileName, hasTimeSteps) = firstOutputFrameFileName(param.meshFileName);
+    auto [mainMeshFileName, hasTimeSteps] = firstOutputFrameFileName(param.meshFileName);
+    auto outBaseName = s3dmmBaseName(param.meshFileName, param.outputDirectory);
+    auto mainOutFileName = firstOutputFrameFileName(outBaseName).first;
 
     REPORT_PROGRESS_STAGES();
     REPORT_PROGRESS_STAGE("Generate metadata");
@@ -189,7 +189,7 @@ void processMeshTemplate(const RunParameters& param)
     };
 
     using BTM = BlockTreeFromMesh<N, MeshDataProvider, MeshElementRefinerParam>;
-    auto metadataFileName = mainMeshFileName + ".s3dmm-meta";
+    auto metadataFileName = mainOutFileName + ".s3dmm-meta";
     BTM btm(metadataFileName,
             mainMeshProvider,
             param.metadataMaxFullLevel,
@@ -217,12 +217,12 @@ void processMeshTemplate(const RunParameters& param)
                 md, mbxGetter, param.boundaryRefine);
             BlockTreeFieldProvider<N> shapeFieldProvider(
                         md,
-                        mainMeshFileName + ".s3dmm-field#shape",
+                        mainOutFileName + ".s3dmm-field#shape",
                         fieldForBoundary,
                         BlockTreeFieldGenerationPolicy::Separate,
                         cbField);
             if (param.saveBoundaryTecplot)
-                saveMeshBoundaryToTecplot(mbxGetter(), mainMeshFileName);
+                saveMeshBoundaryToTecplot(mbxGetter(), mainOutFileName);
         }
     }
 
@@ -243,8 +243,8 @@ void processMeshTemplate(const RunParameters& param)
     cout << endl;
     BlockTreeMappedFieldsProvider<N> btf(
                 md,
-                mainMeshFileName,
-                mainMeshFileName,
+                mainOutFileName,
+                mainOutFileName,
                 BlockTreeIMappedFieldsFromFile<N, MeshDataProvider, MeshElementRefinerParam>(
                     md, mainMeshProvider),
                 cbMappedField, mappedFieldGenTimers);
@@ -253,17 +253,18 @@ void processMeshTemplate(const RunParameters& param)
     if (hasTimeSteps) {
         namespace te = silver_bullets::task_engine;
         auto processTimestepFunc = te::makeSimpleTaskFunc([&](unsigned int frame) {
-            auto meshFileName = frameOutputFileName(param.meshFileName, frame, true);
-            BOOST_ASSERT(filesystem::exists(meshFileName));
-            auto frameMeshProvider = make_unique<MeshDataProvider>(meshFileName);
+            auto inMeshFileName = frameOutputFileName(param.meshFileName, frame, true);
+            auto outFileName = frameOutputFileName(outBaseName, frame, true);
+            BOOST_ASSERT(filesystem::exists(inMeshFileName));
+            auto frameMeshProvider = make_unique<MeshDataProvider>(inMeshFileName);
             {
                 lock_guard g(coutMutex);
                 cout << "Approximating fields at time step " << frame << endl;
             }
             BlockTreeMappedFieldsProvider<N> btf(
                         md,
-                        mainMeshFileName,
-                        meshFileName,
+                        mainOutFileName,
+                        outFileName,
                         BlockTreeIMappedFieldsFromFile<N, MeshDataProvider, MeshElementRefinerParam>(
                             md, *frameMeshProvider),
                         cbMappedField, mappedFieldGenTimers);
@@ -284,8 +285,8 @@ void processMeshTemplate(const RunParameters& param)
         list<boost::any> taskInputs;
         list<boost::any*> taskInputPtrs;
         for (; ; ++frame) {
-            auto meshFileName = frameOutputFileName(param.meshFileName, frame, true);
-            if (filesystem::exists(meshFileName)) {
+            auto inMeshFileName = frameOutputFileName(param.meshFileName, frame, true);
+            if (filesystem::exists(inMeshFileName)) {
                 taskInputs.push_back(frame);
                 taskInputPtrs.push_back(&taskInputs.back());
                 te::const_pany_range input = { &taskInputPtrs.back(), &taskInputPtrs.back()+1 };
@@ -330,8 +331,8 @@ void processMeshTemplate(const RunParameters& param)
             auto fieldIndex = fieldVariables[i];
             auto fieldName = fieldNames.at(fieldIndex);
             for (auto timeFrame=0u; timeFrame<frame; ++timeFrame) {
-                auto fieldFileName = frameOutputFileName(param.meshFileName, timeFrame, hasTimeSteps) + ".s3dmm-field#" + fieldName;
-                BlockTreeFieldProvider<N> btf(md, fieldFileName);
+                auto outFieldFileName = frameOutputFileName(outBaseName, timeFrame, hasTimeSteps) + ".s3dmm-field#" + fieldName;
+                BlockTreeFieldProvider<N> btf(md, outFieldFileName);
                 for (auto& level : md.levels())
                     for (auto& block : level)
                         addRange(fieldRanges[i], btf.fieldRange(block.subtreeRoot()));
@@ -344,11 +345,11 @@ void processMeshTemplate(const RunParameters& param)
         string infoFileName;
         if (hasTimeSteps) {
             using namespace filesystem;
-            auto s = splitFileName(param.meshFileName);
+            auto s = splitFileName(outBaseName);
             infoFileName = path(get<0>(s)).append(get<1>(s)).append(get<1>(s) + get<2>(s) + ".s3dmm-fields");
         }
         else
-            infoFileName = param.meshFileName + ".s3dmm-fields";
+            infoFileName = outBaseName + ".s3dmm-fields";
         ofstream os(infoFileName);
         if (os.fail())
             throw runtime_error(string("Failed to open output file '") + infoFileName + "'");

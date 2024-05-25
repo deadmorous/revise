@@ -122,10 +122,10 @@ void processImageTemplate(const RunParameters& param)
     using BlockId = typename BT::BlockId;
     using NodeIndex = typename BTN::NodeIndex;
 
-    string mainMeshFileName;
-    bool hasTimeSteps;
-    tie(mainMeshFileName, hasTimeSteps) = firstOutputFrameFileName(param.meshFileName);
-    auto metadataFileName = mainMeshFileName + ".s3dmm-meta";
+    auto [mainMeshFileName, hasTimeSteps] = firstOutputFrameFileName(param.meshFileName);
+    auto outBaseName = s3dmmBaseName(param.meshFileName, param.outputDirectory);
+    auto mainOutFileName = firstOutputFrameFileName(outBaseName).first;
+    auto metadataFileName = mainOutFileName + ".s3dmm-meta";
 
     auto cbSubtreeReportGranularity = 1u;
     auto cbSubtreeInvocationCount = 0u;
@@ -194,7 +194,7 @@ void processImageTemplate(const RunParameters& param)
         using Func = ImageFunc<N, real_type, int, decltype(shapeFunc)>;
         BlockTreeFieldProvider<N> shapeFieldProvider(
             md,
-            mainMeshFileName + ".s3dmm-field#shape",
+            mainOutFileName + ".s3dmm-field#shape",
             BlockTreeXWFieldFromImage<N, Func>(
                 md,
                 Func(&grid, "Color", shapeFunc),
@@ -215,7 +215,7 @@ void processImageTemplate(const RunParameters& param)
             using Func = ImageFunc<N, real_type, double, decltype(toReal)>;
             BlockTreeFieldProvider<N> shapeFieldProvider(
                 md,
-                mainMeshFileName + ".s3dmm-field#" + fieldName,
+                mainOutFileName + ".s3dmm-field#" + fieldName,
                 BlockTreeXWFieldFromImage<N, Func>(
                     md,
                     Func(&grid, fieldName, toReal),
@@ -243,7 +243,7 @@ void processImageTemplate(const RunParameters& param)
         using Func = decltype (func);
         BlockTreeFieldProvider<N> shapeFieldProvider(
             md,
-            mainMeshFileName + ".s3dmm-field#" + fieldName,
+            mainOutFileName + ".s3dmm-field#" + fieldName,
             BlockTreeFieldFromFunc<N, Func>(
                 md,
                 func),
@@ -279,7 +279,7 @@ void processImageTemplate(const RunParameters& param)
             auto fieldId = fieldIds[i];
             auto fieldName = imageData.arrayName(fieldId);
             for (auto timeFrame=0u; timeFrame<frame; ++timeFrame) {
-                auto fieldFileName = frameOutputFileName(param.meshFileName, timeFrame, hasTimeSteps) + ".s3dmm-field#" + fieldName;
+                auto fieldFileName = frameOutputFileName(outBaseName, timeFrame, hasTimeSteps) + ".s3dmm-field#" + fieldName;
                 BlockTreeFieldProvider<N> btf(md, fieldFileName);
                 for (auto& level : md.levels())
                     for (auto& block : level)
@@ -293,11 +293,11 @@ void processImageTemplate(const RunParameters& param)
         string infoFileName;
         if (hasTimeSteps) {
             using namespace filesystem;
-            auto s = splitFileName(param.meshFileName);
+            auto s = splitFileName(outBaseName);
             infoFileName = path(get<0>(s)).append(get<1>(s)).append(get<1>(s) + get<2>(s) + ".s3dmm-fields");
         }
         else
-            infoFileName = param.meshFileName + ".s3dmm-fields";
+            infoFileName = outBaseName + ".s3dmm-fields";
         ofstream os(infoFileName);
         if (os.fail())
             throw runtime_error(string("Failed to open output file '") + infoFileName + "'");
