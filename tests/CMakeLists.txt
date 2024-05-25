@@ -23,3 +23,4 @@ if (UNIX)
     target_link_libraries (${PROJECT_NAME} pthread)
 endif()
 
+set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)

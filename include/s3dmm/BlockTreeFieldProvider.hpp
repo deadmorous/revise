@@ -28,7 +28,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include <boost/range/algorithm/fill.hpp>
 #include <boost/range/algorithm/transform.hpp>
 #include <boost/range/algorithm/copy.hpp>
-#include <experimental/filesystem>
+#include <filesystem>
 #include <fstream>
 
 namespace s3dmm {
@@ -78,8 +78,8 @@ public:
         m_fieldFileName(fieldFileName),
         m_timers(timers)
     {
-        using namespace std::experimental::filesystem;
-        if (!exists(m_fieldFileName)) {
+        namespace fs = std::filesystem;
+        if (!fs::exists(m_fieldFileName)) {
             switch (generationPolicy) {
             case BlockTreeFieldGenerationPolicy::Separate:
                 generateSeparatedField(fieldGenerator, progressCallback);
@@ -101,8 +101,8 @@ public:
         m_metadata(metadata),
         m_fieldFileName(fieldFileName)
     {
-        using namespace std::experimental::filesystem;
-        if (!exists(m_fieldFileName))
+        namespace fs = std::filesystem;
+        if (!fs::exists(m_fieldFileName))
             throw std::runtime_error(std::string("Field file '") + m_fieldFileName + "' does not exist");
         m_is.open(m_fieldFileName, std::ios::binary);
         if (m_is.fail())

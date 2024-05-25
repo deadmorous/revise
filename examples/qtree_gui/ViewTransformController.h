@@ -34,8 +34,8 @@ private:
     };
     State m_state = None;
     QRect m_dragStartRect;
-    QPoint m_dragStartPos;
-    QPoint m_zoomStartPos = { 0, 0 };
+    QPointF m_dragStartPos;
+    QPointF m_zoomStartPos = { 0, 0 };
     TransformData m_dragStartTransform;
     TransformData m_startTransform;
     TransformData m_endTransform;

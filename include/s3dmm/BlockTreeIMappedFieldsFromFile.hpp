@@ -28,9 +28,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/algorithm/transform.hpp>
 
-#include <experimental/filesystem>
-#include <fstream>
-
 // #define DEBUG_ELEMENT_MAPPER_STATS
 
 namespace s3dmm {

@@ -40,4 +40,16 @@ struct hash<s3dmm::MultiIndex<N, T>>
     }
 };
 
+template<class T>
+struct hash<s3dmm::MultiIndex<1, T>>
+{
+    using argument_type = s3dmm::MultiIndex<1, T>;
+    using result_type = size_t;
+    result_type operator()(const argument_type& idx) const
+    {
+        hash<T> itemHash;
+        return itemHash(idx[0]);
+    }
+};
+
 } // std

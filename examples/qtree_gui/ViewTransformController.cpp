@@ -66,7 +66,7 @@ bool ViewTransformController::eventFilter(QObject *watched, QEvent *event)
         auto dz = exp(wheelEvent->angleDelta().y()/120. * log(2)/3);
         auto& t0 = m_timerId == 0? m_currentTransform: m_endTransform;
         m_endTransform.zoom = t0.zoom*dz;
-        m_zoomStartPos = wheelEvent->pos();
+        m_zoomStartPos = wheelEvent->position();
         if (m_timerId == 0)
             m_dragStartRect = m_host->rect();
         m_zooming = true;

@@ -20,7 +20,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #pragma once
 
 #include "Metadata.hpp"
-#include "MeshElementType.hpp"
 #include "foreach_byindex32.hpp"
 #include "computeFieldRange.hpp"
 #include "ProgressReport.hpp"
@@ -30,7 +29,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include <boost/range/algorithm/transform.hpp>
 #include <boost/range/algorithm/copy.hpp>
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <fstream>
 #include <map>
 
@@ -78,17 +77,17 @@ public:
         m_fieldBaseName(fieldBaseName),
         m_timers(timers)
     {
-        using namespace std::experimental::filesystem;
+        namespace fs = std::filesystem;
         auto fieldNames = fieldGenerator.fieldNames();
         std::vector<unsigned int> missingFieldIndices;
         foreach_byindex32(ifield, fieldNames) {
-            if (!exists(fieldFileName(fieldNames[ifield])))
+            if (!fs::exists(fieldFileName(fieldNames[ifield])))
                 missingFieldIndices.push_back(ifield);
         }
         if (!missingFieldIndices.empty())
         {
             auto fieldMapFileName = fieldMapBaseName + ".s3dmm-fmap";
-            if (!exists(fieldMapFileName))
+            if (!fs::exists(fieldMapFileName))
                 generateFieldMap(fieldMapFileName, fieldGenerator, progressCallback);
             openFieldMap(fieldMapFileName);
             generateFields(missingFieldIndices, fieldGenerator, progressCallback);

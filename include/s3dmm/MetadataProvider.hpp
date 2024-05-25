@@ -22,8 +22,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "Metadata.hpp"
 #include "ProgressReport.hpp"
 
-#include "silver_bullets/fs_ns_workaround.hpp"
-
+#include <filesystem>
 #include <fstream>
 
 namespace s3dmm {
@@ -65,9 +64,9 @@ public:
 
     Metadata<N>& metadata() const
     {
-        using namespace std::experimental::filesystem;
+        namespace fs = std::filesystem;
         if (!m_metadata) {
-            if (!exists(m_metadataFileName)) {
+            if (!fs::exists(m_metadataFileName)) {
                 std::ofstream os(m_metadataFileName, std::ios::binary);
                 if (os.fail())
                     throw std::runtime_error("Failed to open output metadata file");

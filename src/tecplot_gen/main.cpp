@@ -18,15 +18,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 */
 
 #define _USE_MATH_DEFINES
-#include <sstream>
 #include <fstream>
-#include <iomanip>
 #include <stdexcept>
 #include <cmath>
-#include <sstream>
-#include <experimental/filesystem>
+#include <filesystem>
 #include <boost/assert.hpp>
-#include "MultiIndex.hpp"
 #include "filename_util.hpp"
 #include "TecplotMeshWriterHelper.hpp"
 #include "BinaryMeshWriterHelper.hpp"
@@ -399,7 +395,7 @@ int main(int argc, char *argv[])
             throw invalid_argument("The 'type' parameter must be either sphere or cube");
 
         if (tp.frameCount > 1 && !outputFileName.empty())
-            experimental::filesystem::create_directory(outputFrameDirectory(outputFileName, true));
+            filesystem::create_directory(outputFrameDirectory(outputFileName, true));
         for (auto frame=0u; frame<tp.frameCount; ++frame) {
             cout << "Generating time frame " << (frame+1) << " of " << tp.frameCount << endl;
             ofstream outputFile;
@@ -409,7 +405,7 @@ int main(int argc, char *argv[])
                 outputFile.open(name, ios::binary);
                 if (outputFile.fail())
                     throw runtime_error(string("Failed to open output file '") + name + "'");
-                auto ext = experimental::filesystem::path(name).extension();
+                auto ext = filesystem::path(name).extension();
                 if (ext == ".tec")
                     type = FileType::Tecplot;
                 else if (ext == ".bin")

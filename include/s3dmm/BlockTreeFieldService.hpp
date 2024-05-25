@@ -178,14 +178,13 @@ private:
     void readFieldInfoFile()
     {
         using namespace std;
-        using namespace experimental::filesystem;
+        namespace fs = std::filesystem;
         string mainFileName;
         tie(mainFileName, m_hasTimeSteps) = firstOutputFrameFileName(m_baseName);
         string infoFileName;
         if (m_hasTimeSteps) {
-            using namespace experimental::filesystem;
             auto s = splitFileName(m_baseName);
-            infoFileName = path(get<0>(s)).append(get<1>(s)).append(get<1>(s) + get<2>(s) + ".s3dmm-fields");
+            infoFileName = fs::path(get<0>(s)).append(get<1>(s)).append(get<1>(s) + get<2>(s) + ".s3dmm-fields");
         }
         else
             infoFileName = m_baseName + ".s3dmm-fields";

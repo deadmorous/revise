@@ -25,8 +25,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "FullBlockTreeGenerator.hpp"
 #include "elementScalarSize.hpp"
 
-#include "silver_bullets/fs_ns_workaround.hpp"
-
+#include <filesystem>
 #include <fstream>
 
 
@@ -301,10 +300,10 @@ private:
 
     BoundingBox<N, real_type> maybeReadBoundingBox() const
     {
-        using namespace std::experimental::filesystem;
+        namespace fs = std::filesystem;
         BoundingBox<N, real_type> bb;
         auto bbFileName = boundingBoxFileName();
-        if (exists(bbFileName)) {
+        if (fs::exists(bbFileName)) {
             std::ifstream is(bbFileName);
             is.exceptions(std::istream::failbit);
             for (auto i=0u; i<2; ++i) {

@@ -51,3 +51,5 @@ if (S3DMM_ENABLE_CUDA)
     add_dependencies(${PROJECT_NAME} s3dmm_cuda)
     target_link_libraries(${PROJECT_NAME} s3dmm_cuda)
 endif()
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)

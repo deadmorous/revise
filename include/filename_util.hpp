@@ -23,14 +23,13 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include <utility>
 #include <sstream>
 #include <iomanip>
-#include <experimental/filesystem>
+#include <filesystem>
 
 namespace s3dmm {
 
 inline std::tuple<std::string, std::string, std::string> splitFileName(const std::string& baseName)
 {
-    using namespace std::experimental::filesystem;
-    auto p = path(baseName);
+    auto p = std::filesystem::path(baseName);
     return { p.parent_path(), p.stem(), p.extension() };
 }
 
@@ -45,32 +44,31 @@ inline std::string frameOutputFileName(const std::string& baseName, unsigned int
     oss << stem << "_t"
         << setfill('0') << setw(6) << frameNumber
         << ext;
-    return experimental::filesystem::path(dir).append(stem).append(oss.str());
+    return filesystem::path(dir).append(stem).append(oss.str());
 }
 
 inline bool baseNameCorrespondsToFile(const std::string& baseName)
 {
-    using namespace std::experimental::filesystem;
-    return exists(baseName) && is_regular_file(baseName);
+    namespace fs = std::filesystem;
+    return fs::exists(baseName) && fs::is_regular_file(baseName);
 }
 
 inline bool baseNameCorrespondsToDirectory(const std::string& baseName)
 {
-    using namespace std::experimental::filesystem;
+    namespace fs = std::filesystem;
     auto s = splitFileName(baseName);
-    std::string dirName = path(std::get<0>(s)).append(std::get<1>(s));
-    return exists(dirName) && is_directory(dirName);
+    std::string dirName = fs::path(std::get<0>(s)).append(std::get<1>(s));
+    return fs::exists(dirName) && fs::is_directory(dirName);
 }
 
 inline std::string outputFrameDirectory(const std::string& baseName, bool hasTimeFrames)
 {
-    using namespace std;
-    using namespace experimental::filesystem;
+    namespace fs = std::filesystem;
     auto s = splitFileName(baseName);
     if (hasTimeFrames)
-        return path(get<0>(s)).append(get<1>(s));
+        return fs::path(std::get<0>(s)).append(std::get<1>(s));
     else
-        return get<0>(s);
+        return std::get<0>(s);
 }
 
 inline std::string outputFrameDirectory(const std::string& baseName)
@@ -97,15 +95,16 @@ inline std::pair<std::string, bool> firstOutputFrameFileName(const std::string& 
 
 inline std::string s3dmmBaseName(const std::string& inputBaseName, const std::string& outputDirectory)
 {
-    using namespace std::experimental::filesystem;
+    namespace fs = std::filesystem;
 
     if (outputDirectory.empty())
         return inputBaseName;
 
-    if (!exists(outputDirectory) && !create_directories(outputDirectory))
+    if (std::error_code ec; !fs::exists(outputDirectory) &&
+                            !fs::create_directories(outputDirectory, ec))
     {
         std::ostringstream oss;
-        oss << "Failed to create otuput directory '" << outputDirectory;
+        oss << "Failed to create otuput directory '" << outputDirectory << "': " << ec.message();
         throw std::runtime_error(oss.str());
     }
 
@@ -121,7 +120,7 @@ inline std::string s3dmmBaseName(const std::string& inputBaseName, const std::st
     if (hasTimeSteps)
         return outputDirectory + ext;
     else
-        return path(outputDirectory) / (stem + ext);
+        return fs::path(outputDirectory) / (stem + ext);
 }
 
 } // s3dmm

@@ -53,7 +53,7 @@ void meshInfo(const RunParameters& param)
         unsigned int frame = 0;
         for (; ; ++frame) {
             auto meshFileName = frameOutputFileName(param.meshFileName, frame, true);
-            if (!experimental::filesystem::exists(meshFileName))
+            if (!filesystem::exists(meshFileName))
                 break;
         }
         cout << "Time steps: " << frame << endl;

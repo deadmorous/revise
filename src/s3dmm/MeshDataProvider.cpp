@@ -21,9 +21,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "s3dmm/mesh_reader.hpp"
 #include "foreach_byindex32.hpp"
 
-#include <fstream>
+#include <filesystem>
 #include <numeric>
-#include <experimental/filesystem>
 
 namespace s3dmm {
 
@@ -492,7 +491,7 @@ bool MeshDataProvider::ZonesIterator::equal(const ZonesIterator& that) const
 
 MeshReaderType MeshDataProvider::guessMeshReaderType(const std::string& fileName)
 {
-    auto ext = std::experimental::filesystem::path(fileName).extension();
+    auto ext = std::filesystem::path(fileName).extension();
     if (ext == ".tec")
         return MeshReaderType::Tecplot;
     else if (ext == ".bin")

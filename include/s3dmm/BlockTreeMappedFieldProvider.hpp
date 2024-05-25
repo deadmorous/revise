@@ -20,7 +20,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #pragma once
 
 #include "Metadata.hpp"
-#include "MeshElementType.hpp"
 #include "foreach_byindex32.hpp"
 #include "computeFieldRange.hpp"
 #include "signed_shift.hpp"
@@ -29,7 +28,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include <boost/range/algorithm/transform.hpp>
 #include <boost/range/algorithm/copy.hpp>
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <fstream>
 #include <map>
 
@@ -77,10 +76,10 @@ public:
         m_fieldFileName(fieldFileName),
         m_timers(timers)
     {
-        using namespace std::experimental::filesystem;
-        if (!exists(m_fieldFileName)) {
+        namespace fs = std::filesystem;
+        if (!fs::exists(m_fieldFileName)) {
             auto fieldMapFileName = baseName + ".s3dmm-fmap";
-            if (!exists(fieldMapFileName))
+            if (!fs::exists(fieldMapFileName))
                 generateFieldMap(fieldMapFileName, fieldGenerator, progressCallback);
             openFieldMap(fieldMapFileName);
             generateField(fieldGenerator, progressCallback);
@@ -97,8 +96,8 @@ public:
         m_metadata(metadata),
         m_fieldFileName(fieldFileName)
     {
-        using namespace std::experimental::filesystem;
-        if (!exists(m_fieldFileName))
+        namespace fs = std::filesystem;
+        if (!fs::exists(m_fieldFileName))
             throw std::runtime_error(std::string("Field file '") + m_fieldFileName + "' does not exist");
         m_is.open(m_fieldFileName, std::ios::binary);
         if (m_is.fail())

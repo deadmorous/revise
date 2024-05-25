@@ -21,6 +21,10 @@ add_library(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
 target_link_libraries(${PROJECT_NAME} stdc++fs)
 
+# Because using s3dmm::ProgressReport::Timer - TODO: figure out why.
+add_dependencies(${PROJECT_NAME} s3dmm)
+target_link_libraries(${PROJECT_NAME} s3dmm)
+
 if (S3DMM_CUDA_REPORT_DFIELD_TIME)
     add_definitions(-DS3DMM_CUDA_REPORT_DFIELD_TIME)
 endif()
@@ -35,4 +39,6 @@ else()
     set_property(TARGET ${PROJECT_NAME} PROPERTY CUDA_ARCHITECTURES 50 61)
 endif()
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CUDA_STANDARD 14)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CUDA_STANDARD 20)
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)

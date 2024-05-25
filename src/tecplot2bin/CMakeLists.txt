@@ -11,3 +11,5 @@ target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} s3dmm tecplot_rw)
 set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY
   COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>
 )
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)

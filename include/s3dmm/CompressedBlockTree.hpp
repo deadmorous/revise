@@ -23,6 +23,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "TreeBlockId.hpp"
 #include "BitPacker.hpp"
 #include "BlockTree_defs.hpp"
+
+#include <limits>
 #include <vector>
 
 namespace s3dmm {
@@ -200,8 +202,12 @@ public:
             BOOST_ASSERT(children);
             auto childMask = 1 << (ChildCount-1);
             for (auto childLocalIndex=0u; childLocalIndex<ChildCount; ++childLocalIndex, childMask>>=1) {
+                BOOST_ASSERT(childIndex <= std::numeric_limits<unsigned int>::max());
                 if (children & childMask) {
-                    BlockId childBlockId = {childIndex, root.level+1, childBlockLocation(root.location, childLocalIndex)};
+                    BlockId childBlockId = {
+                        static_cast<unsigned int>(childIndex),
+                        root.level+1,
+                        childBlockLocation(root.location, childLocalIndex)};
 #ifdef S3DMM_BLOCKTREE_COUNT_EACH_SUBTREE_DEPTH
                     if (minDepth > 0 || isSubtreeDeeperThan(childBlockId, maxDepth-1))
 #endif // S3DMM_BLOCKTREE_COUNT_EACH_SUBTREE_DEPTH

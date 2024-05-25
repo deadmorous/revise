@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 3.1.3)
 project (src)
 
 add_subdirectory(s3dmm)
-# add_subdirectory(s3dmm_cli)
 add_subdirectory(s3dmm_prep)
 add_subdirectory(ctmlex)
 add_subdirectory(tecplot_rw)

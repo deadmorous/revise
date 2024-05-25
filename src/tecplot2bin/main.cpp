@@ -20,7 +20,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
-#include <experimental/filesystem>
+#include <filesystem>
 #include "s3dmm/TecplotMeshDataProvider.hpp"
 #include "BinaryMeshWriterHelper.hpp"
 
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
         if (argc != 2)
             throw invalid_argument("Usage: tecplot2bin <tecplot-file-name.tec>");
         string tecplotFileName = argv[1];
-        experimental::filesystem::path inputPath(tecplotFileName);
+        filesystem::path inputPath(tecplotFileName);
         if (inputPath.extension() != ".tec")
             throw invalid_argument("Input file must have the .tec filename extension");
         auto outputPath = inputPath;

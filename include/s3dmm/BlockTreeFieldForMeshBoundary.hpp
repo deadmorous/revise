@@ -21,11 +21,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include "MeshBoundaryWalker.hpp"
 #include "Metadata.hpp"
-#include "faceNormalVector.hpp"
-
-#include <experimental/filesystem>
-#include <fstream>
-#include <memory>
 
 namespace s3dmm {
 

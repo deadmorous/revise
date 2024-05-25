@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                     tr("Any suitable files (*.tec *.bin);;Tecplot files (*.tec);;Binary files (*.bin)"));
         if (!fileName.isEmpty())
             m_stateDataController.openInputFile(fileName);
-    }, Qt::CTRL+Qt::Key_O);
+    }, static_cast<int>(Qt::CTRL) + static_cast<int>(Qt::Key_O)); // TODO: Use QKeyCombination after migrating to Qt 6
 
     fileMenu->addAction(tr("&Save view as image..."), [&]()
     {
@@ -54,8 +54,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                 QPdfWriter pix(fileName);
                 constexpr const int PdfResolution = 300;
                 pix.setResolution(PdfResolution);
-                pix.setPageSizeMM(cw->size()*25.4/PdfResolution);
-                pix.setMargins({0,0,0,0});
+                pix.setPageSize(QPageSize(cw->size()*25.4/PdfResolution, QPageSize::Millimeter));
+                pix.setPageMargins(QMarginsF(0,0,0,0), QPageLayout::Millimeter);
                 cw->render(&pix);
             }
             else if (fileName.endsWith(".svg")) {
@@ -73,10 +73,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                     QMessageBox::critical(this, QString(), tr("Failed to save view to file '%1'").arg(fileName));
             }
         }
-    }, Qt::CTRL+Qt::Key_S);
+    }, static_cast<int>(Qt::CTRL) + static_cast<int>(Qt::Key_S)); // TODO: Use QKeyCombination after migrating to Qt 6
 
     fileMenu->addSeparator();
-    fileMenu->addAction(tr("&Quit"), this, &QMainWindow::close, Qt::CTRL+Qt::Key_Q);
+    fileMenu->addAction(
+        tr("&Quit"), this, &QMainWindow::close,
+        static_cast<int>(Qt::CTRL) + static_cast<int>(Qt::Key_Q)); // TODO: Use QKeyCombination after migrating to Qt 6
 
     auto addDock = [this](Qt::DockWidgetArea dockArea, const QString& name, QWidget *widget) {
         auto dock = new QDockWidget(name, this);

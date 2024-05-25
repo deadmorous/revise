@@ -27,9 +27,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include <boost/range/algorithm/copy.hpp>
 
-#include <experimental/filesystem>
-#include <fstream>
-
 namespace s3dmm {
 
 // Note: IMappedField means "interpolated mapped field",

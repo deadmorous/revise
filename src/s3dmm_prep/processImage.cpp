@@ -292,9 +292,9 @@ void processImageTemplate(const RunParameters& param)
     {
         string infoFileName;
         if (hasTimeSteps) {
-            using namespace filesystem;
+            namespace fs = std::filesystem;
             auto s = splitFileName(outBaseName);
-            infoFileName = path(get<0>(s)).append(get<1>(s)).append(get<1>(s) + get<2>(s) + ".s3dmm-fields");
+            infoFileName = fs::path(get<0>(s)).append(get<1>(s)).append(get<1>(s) + get<2>(s) + ".s3dmm-fields");
         }
         else
             infoFileName = outBaseName + ".s3dmm-fields";
