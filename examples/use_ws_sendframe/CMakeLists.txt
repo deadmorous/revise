@@ -5,14 +5,14 @@ project(${ProjectId})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt6 COMPONENTS Core REQUIRED)
 
 aux_source_directory(. SOURCE_FILES)
 file (GLOB_RECURSE HEADER_FILES RELATIVE ${PROJECT_SOURCE_DIR} *.h *.hpp *.hxx)
 file (GLOB_RECURSE RESOURCES RELATIVE ${PROJECT_SOURCE_DIR} *.qrc)
 
-qt5_wrap_cpp (MOC_SOURCES ${HEADER_FILES})
-qt5_add_resources (QRC_SOURCES ${RESOURCES})
+qt6_wrap_cpp (MOC_SOURCES ${HEADER_FILES})
+qt6_add_resources (QRC_SOURCES ${RESOURCES})
 source_group ("Generated Files" FILES ${MOC_SOURCES} ${QRC_SOURCES} ${QM_FILE})
 
 add_executable(${PROJECT_NAME}
@@ -30,7 +30,7 @@ add_dependencies(${PROJECT_NAME} ws_sendframe)
 target_link_libraries(${PROJECT_NAME}
     ${Boost_LIBRARIES}
     ws_sendframe
-    Qt5::Core
+    Qt6::Core
     )
 
 set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY

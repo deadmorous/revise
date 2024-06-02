@@ -5,7 +5,7 @@ project(${ProjectId})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5 COMPONENTS Core Gui REQUIRED)
+find_package(Qt6 COMPONENTS Core Gui REQUIRED)
 
 aux_source_directory(. SOURCE_FILES)
 
@@ -20,8 +20,8 @@ add_executable(${PROJECT_NAME}
 #add_dependencies(${PROJECT_NAME} s3vs_lib)
 target_link_libraries(${PROJECT_NAME}
     ${Boost_LIBRARIES}
-    Qt5::Core
-    Qt5::Gui
+    Qt6::Core
+    Qt6::Gui
     )
 #-lGL -lEGL -lGLESv2
 

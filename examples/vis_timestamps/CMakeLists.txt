@@ -5,7 +5,7 @@ project(${ProjectId})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Core Widgets REQUIRED)
 
 include_directories(${S3DMM_ROOT_DIR}/dist/include)
 
@@ -21,8 +21,8 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     ${Boost_LIBRARIES}
-    Qt5::Core
-    Qt5::Widgets
+    Qt6::Core
+    Qt6::Widgets
     stdc++fs
     )
 

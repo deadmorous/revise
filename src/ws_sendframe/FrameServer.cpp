@@ -100,7 +100,7 @@ QString encodeImage(const QImage &frame, int quality)
 }
 
 template <class It>
-void readLongIntegers(It dst, const QStringRef &s, std::size_t count, QChar delimiter)
+void readLongIntegers(It dst, const QStringView &s, std::size_t count, QChar delimiter)
 {
     int pos = 0;
     for (size_t i = 0; i < count; ++i)
@@ -320,7 +320,7 @@ private:
                     s << "processTextMessage: src=" << clientInfo.sourceId << " reply received: " << message.toStdString();
                 });
                 try {
-                    readLongIntegers(frame_numbers, QStringRef(&message, 2, message.size() - 2), 2, ':');
+                    readLongIntegers(frame_numbers, QStringView(message).sliced(2), 2, ':');
                     clientInfo.lastConfirmedServerFrameNumber = frame_numbers[1];
                 }
                 catch(std::exception&) {

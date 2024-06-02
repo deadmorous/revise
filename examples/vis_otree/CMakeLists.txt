@@ -11,7 +11,7 @@ set(CMAKE_AUTORCC ON)
 
 set(OpenGL_GL_PREFERENCE GLVND)
 
-find_package(Qt5 COMPONENTS Core Widgets OpenGL REQUIRED)
+find_package(Qt6 COMPONENTS Core Widgets OpenGL OpenGLWidgets REQUIRED)
 
 aux_source_directory(. SOURCE_FILES)
 file (GLOB_RECURSE HEADER_FILES RELATIVE ${PROJECT_SOURCE_DIR} *.h *.hpp *.hxx)
@@ -21,7 +21,7 @@ file (GLOB_RECURSE RESOURCES RELATIVE ${PROJECT_SOURCE_DIR} *.qrc)
 # source_group ("Generated Files" FILES ${MOC_SOURCES} ${QRC_SOURCES} ${QM_FILE})
 # source_group ("Translation Files" FILES ${TS_FILE})
 
-find_package(VL COMPONENTS VLCore VLGraphics VLVG VLVolume VLMolecule VLQt5 REQUIRED)
+find_package(VL COMPONENTS VLCore VLGraphics VLVG VLVolume VLMolecule VLQt6 VLMain REQUIRED)
 include_directories(${VL_INCLUDE_DIRS})
 # find ${OPENGL_LIBRARIES} to be used later
 find_package(OpenGL REQUIRED)
@@ -34,6 +34,8 @@ macro(copy_vl_resource resourcePath)
     copy_resource(${CMAKE_SOURCE_DIR}/third_parties/VisualizationLibrary/data ${resourcePath})
 endmacro()
 
+copy_vl_resource(glsl/std/uniforms.glsl)
+copy_vl_resource(glsl/std/vertex_attribs.glsl)
 copy_vl_resource(glsl/volume_luminance_light.vs)
 copy_vl_resource(glsl/volume_raycast_isosurface.fs)
 copy_vl_resource(glsl/volume_raycast_isosurface_transp.fs)
@@ -65,9 +67,10 @@ target_link_libraries(${PROJECT_NAME}
     ${OPENGL_LIBRARIES}
     s3dmm
     tecplot_rw
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::OpenGL)
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::OpenGL
+    Qt6::OpenGLWidgets)
 
 set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY
   COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>

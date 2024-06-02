@@ -26,7 +26,7 @@ if (${ProjectId}_USE_OPENMP)
 endif()
 
 if (S3DMM_ENABLE_FRAME_IMAGE_PARTS_SAVING)
-    find_package(Qt5 COMPONENTS Core Gui REQUIRED)
+    find_package(Qt6 COMPONENTS Core Gui REQUIRED)
 endif()
 
 add_library(${PROJECT_NAME} ${SOURCE_FILES})
@@ -42,8 +42,8 @@ target_link_libraries(${PROJECT_NAME}
     )
 if (S3DMM_ENABLE_FRAME_IMAGE_PARTS_SAVING)
     target_link_libraries(${PROJECT_NAME}
-        Qt5::Core
-        Qt5::Gui
+        Qt6::Core
+        Qt6::Gui
         )
 endif()
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

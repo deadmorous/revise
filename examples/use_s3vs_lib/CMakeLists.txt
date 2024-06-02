@@ -5,7 +5,7 @@ project(${ProjectId})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5 COMPONENTS Core Gui REQUIRED)
+find_package(Qt6 COMPONENTS Core Gui REQUIRED)
 
 find_package(SilverBulletsFactory)
 include_directories(${SILVER_BULLETS_FACTORY_INCLUDE_DIRS})
@@ -32,8 +32,8 @@ target_link_libraries(${PROJECT_NAME}
     tecplot_rw
     stdc++fs
     dl
-    Qt5::Core
-    Qt5::Gui
+    Qt6::Core
+    Qt6::Gui
     )
 #-lGL -lEGL -lGLESv2
 

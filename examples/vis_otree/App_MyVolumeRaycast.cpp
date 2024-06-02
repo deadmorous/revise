@@ -104,7 +104,7 @@ void App_MyVolumeRaycast::updateEvent()
                     vl::Say("%s [%.1n] %s")
                     << mNname
                     << fps()
-                    << appletName()  + " - " + vl::String("VL ") + vl::VisualizationLibrary::versionString() );
+                    << appletName()  + " - " + vl::String("VL ") + vl::versionString() );
         // vl::Log::print( vl::Say("FPS=%.1n\n") << fps() );
     }
 }
@@ -424,7 +424,7 @@ void App_MyVolumeRaycast::setupVolume()
 
     // volume image field textue must be on sampler #0
     mVolFieldTex = new vl::Texture( mVolumeFieldImage.get(), TF_LUMINANCE16, false, false );
-    volume_fx->shader()->gocTextureSampler( 0 )->setTexture( mVolFieldTex.get() );
+    volume_fx->shader()->gocTextureImageUnit( 0 )->setTexture( mVolFieldTex.get() );
     auto texInterpMode = mLinearTextureInterpolation? vl::TPF_LINEAR: vl::TPF_NEAREST;
     mVolFieldTex->getTexParameter()->setMagFilter( texInterpMode );
     mVolFieldTex->getTexParameter()->setMinFilter( texInterpMode );
@@ -437,7 +437,7 @@ void App_MyVolumeRaycast::setupVolume()
         if (mVolumeAlphaImage) {
             // volume image alpha textue must be on sampler #2
             mVolAlphaTex = new vl::Texture( mVolumeAlphaImage.get(), TF_LUMINANCE16, false, false );
-            volume_fx->shader()->gocTextureSampler( 2 )->setTexture( mVolAlphaTex.get() );
+            volume_fx->shader()->gocTextureImageUnit( 2 )->setTexture( mVolAlphaTex.get() );
             mVolAlphaTex->getTexParameter()->setMagFilter( vl::TPF_LINEAR );
             mVolAlphaTex->getTexParameter()->setMinFilter( vl::TPF_LINEAR );
             mVolAlphaTex->getTexParameter()->setWrap( vl::TPW_CLAMP_TO_EDGE );
@@ -459,7 +459,7 @@ void App_MyVolumeRaycast::setupVolume()
     trf_tex->getTexParameter()->setMagFilter( vl::TPF_LINEAR );
     trf_tex->getTexParameter()->setMinFilter( vl::TPF_LINEAR );
     trf_tex->getTexParameter()->setWrap( vl::TPW_CLAMP_TO_EDGE );
-    volume_fx->shader()->gocTextureSampler( 1 )->setTexture( trf_tex.get() );
+    volume_fx->shader()->gocTextureImageUnit( 1 )->setTexture( trf_tex.get() );
     volume_fx->shader()->gocUniform( "trfunc_texunit" )->setUniformI( 1 );
 
     // gradient computation, only use for isosurface methods
@@ -473,7 +473,7 @@ void App_MyVolumeRaycast::setupVolume()
             tex->getTexParameter()->setMagFilter( vl::TPF_LINEAR );
             tex->getTexParameter()->setMinFilter( vl::TPF_LINEAR );
             tex->getTexParameter()->setWrap( vl::TPW_CLAMP_TO_EDGE );
-            volume_fx->shader()->gocTextureSampler( 2 )->setTexture( tex.get() );
+            volume_fx->shader()->gocTextureImageUnit( 2 )->setTexture( tex.get() );
         }
     }
 

@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QDir>
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -18,7 +19,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include "silver_bullets/enum_names.hpp"
-#include "silver_bullets/fs_ns_workaround.hpp"
 #include "enumHelp.hpp"
 
 using namespace std;
@@ -735,13 +735,13 @@ void showMinMaxTaskStageDuration(const Param& param, const Frames& frameData) {
 
 QString outputDirPrefix(const Param& param)
 {
-    using namespace filesystem;
+    namespace fs = std::filesystem;
     auto outputDir = param.inputFileName + ".dir";
-    if (exists(outputDir)) {
-        if (!is_directory(outputDir))
+    if (fs::exists(outputDir)) {
+        if (!fs::is_directory(outputDir))
             throw runtime_error("File '" + outputDir + "' already exists and is not a directory");
     }
-    else if (!create_directory(outputDir))
+    else if (!fs::create_directory(outputDir))
         throw runtime_error("Failed to create directory '" + outputDir + "'");
     auto result = QString::fromStdString(outputDir);
     if (!result.endsWith('/'))

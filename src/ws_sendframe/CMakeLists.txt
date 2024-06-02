@@ -9,7 +9,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt5 COMPONENTS Core WebSockets Gui REQUIRED)
+find_package(Qt6 COMPONENTS Core WebSockets Gui REQUIRED)
 
 # include_directories(${S3DMM_ROOT_DIR}/dist/include)
 
@@ -31,9 +31,9 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     ${Boost_LIBRARIES}
-    Qt5::Core
-    Qt5::WebSockets
-    Qt5::Gui
+    Qt6::Core
+    Qt6::WebSockets
+    Qt6::Gui
 )
 
 set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY

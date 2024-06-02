@@ -29,7 +29,7 @@ endif (S3VS_WORKER_CUDA_RENDERING)
 find_package(SilverBulletsFactory)
 include_directories(${SILVER_BULLETS_FACTORY_INCLUDE_DIRS})
 
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Core Widgets REQUIRED)
 
 # TODO: Remove
 #aux_source_directory(opengl OTHER_TMP_SOURCE_FILES_TODO_REMOVE)
@@ -47,8 +47,8 @@ target_link_libraries(${PROJECT_NAME}
     ${SILVER_BULLETS_FACTORY_LIBRARIES}
     s3dmm
     tecplot_rw
-    Qt5::Core
-    Qt5::Widgets
+    Qt6::Core
+    Qt6::Widgets
     stdc++fs
     )
 

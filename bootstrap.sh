@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # NOTE: You may want to select a Qt version before running this script, e.g.,
-# export QT_SELECT=qt5-11-2
+# export QT_SELECT=qt6
 #
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -37,11 +37,11 @@ cpu_count=$(cat /proc/cpuinfo |grep processor| wc -l)
 
 # Build and install VL
 mkdir -p vl/debug && cd vl/debug
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$SCRIPTDIR/dist -DVL_GUI_QT5_SUPPORT=ON $SCRIPTDIR/third_parties/VisualizationLibrary
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$SCRIPTDIR/dist -DVL_GUI_QT6_SUPPORT=ON $SCRIPTDIR/third_parties/VisualizationLibrary
 make -j$cpu_count install
 cd ../..
 mkdir -p vl/release && cd vl/release
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$SCRIPTDIR/dist -DVL_GUI_QT5_SUPPORT=ON $SCRIPTDIR/third_parties/VisualizationLibrary
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$SCRIPTDIR/dist -DVL_GUI_QT6_SUPPORT=ON $SCRIPTDIR/third_parties/VisualizationLibrary
 make -j$cpu_count install
 cd ../..
 
