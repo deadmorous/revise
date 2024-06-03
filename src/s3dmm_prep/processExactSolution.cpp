@@ -25,7 +25,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "silver_bullets/iterate_struct/json_doc_converter.hpp"
 #include "silver_bullets/iterate_struct/json_doc_io.hpp"
 #include "silver_bullets/iterate_struct/ConfigLoader.hpp"
-#include "silver_bullets/fs_ns_workaround.hpp"
 #include "silver_bullets/templatize/resolve_template_args.hpp"
 
 #include "silver_bullets/task_engine/ParallelTaskScheduler.hpp"
@@ -50,9 +49,10 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include "filename_util.hpp"
 
+#include <filesystem>
+#include <list>
 #include <mutex>
 #include <numeric>
-#include <list>
 
 using namespace std;
 using namespace s3dmm;

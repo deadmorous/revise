@@ -1,6 +1,3 @@
-#include <iostream>
-
-#include "silver_bullets/fs_ns_workaround.hpp"
 #include "silver_bullets/iterate_struct/json_doc_converter.hpp"
 #include "silver_bullets/iterate_struct/json_doc_io.hpp"
 #include "silver_bullets/system/get_program_dir.hpp"
@@ -20,6 +17,9 @@
 #include <boost/program_options.hpp>
 
 #include <QImage>
+
+#include <filesystem>
+#include <iostream>
 
 using namespace std;
 

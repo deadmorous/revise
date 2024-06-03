@@ -21,16 +21,14 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include "binary_io.hpp"
 
-#include <map>
-#include <set>
-#include <regex>
-
 #include <boost/assert.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
 
-// deBUG, TODO: Remove
-#include "silver_bullets/fs_ns_workaround.hpp"
+#include <filesystem>
+#include <map>
+#include <regex>
+#include <set>
 
 using namespace std;
 

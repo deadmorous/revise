@@ -33,18 +33,18 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include "s3dmm/BlockTreeFieldService.hpp"
 
-#include "silver_bullets/fs_ns_workaround.hpp"
 #include "silver_bullets/system/get_program_dir.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/core/ignore_unused.hpp>
 #include <boost/range.hpp>
 
-#include <chrono>
-
 #ifdef S3DMM_ENABLE_FRAME_IMAGE_PARTS_SAVING
 #include <QImage>
 #endif //S3DMM_ENABLE_FRAME_IMAGE_PARTS_SAVING
+
+#include <chrono>
+#include <filesystem>
 
 using namespace std;
 using namespace s3dmm;

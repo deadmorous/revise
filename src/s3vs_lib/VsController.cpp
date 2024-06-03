@@ -23,7 +23,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "s3dmm/BlockTreeFieldService.hpp"
 
 #include "silver_bullets/system/get_program_dir.hpp"
-#include "silver_bullets/fs_ns_workaround.hpp"
 
 #include "VsRenderer.hpp"
 #include "MouseInterpreter.hpp"

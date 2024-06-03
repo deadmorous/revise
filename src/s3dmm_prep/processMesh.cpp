@@ -37,8 +37,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "silver_bullets/task_engine/ParallelTaskScheduler.hpp"
 #include "silver_bullets/task_engine/ThreadedTaskExecutor.hpp"
 #include "silver_bullets/task_engine/SimpleTaskFunc.hpp"
-#include "silver_bullets/fs_ns_workaround.hpp"
 
+#include <filesystem>
 #include <list>
 
 using namespace std;

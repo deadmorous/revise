@@ -23,11 +23,10 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include <QImage>
 
 #include "s3dmm_cuda/selectGpu.hpp"
+
+#ifdef S3DMM_ENABLE_WORKER_TIME_ESTIMATION
 #include "s3dmm_cuda/manage_profiling.hpp"
-
-#include "default_dense_field_gen.hpp"
-
-#include "silver_bullets/fs_ns_workaround.hpp"
+#endif // S3DMM_ENABLE_WORKER_TIME_ESTIMATION
 
 #include "foreach_byindex32.hpp"
 
