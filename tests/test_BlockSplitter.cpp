@@ -17,7 +17,7 @@ TEST(TestBlockSplitter, DISABLED_testBlockSplitter)
     auto doSplit = [dir, e0, e1](unsigned int level, unsigned int splitCount) {
         BlockSplitter bs;
         auto res = bs.split(level, splitCount, dir, e0, e1);
-        EXPECT_TRUE(res.size() == splitCount);
+        EXPECT_EQ(res.size(), splitCount);
         return res;
     };
 
@@ -25,17 +25,17 @@ TEST(TestBlockSplitter, DISABLED_testBlockSplitter)
         auto res = doSplit(0, 1);
 
         auto item = res[0];
-        EXPECT_TRUE(item.size() == 1);
+        EXPECT_EQ(item.size(), 1);
     }
 
     {
         auto res = doSplit(1, 2);
 
         auto item = res[0];
-        EXPECT_TRUE(item.size() == 1);
+        EXPECT_EQ(item.size(), 1);
 
         item = res[1];
-        EXPECT_TRUE(item.size() == 1);
+        EXPECT_EQ(item.size(), 1);
     }
 }
 
