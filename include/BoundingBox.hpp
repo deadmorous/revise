@@ -74,7 +74,8 @@ public:
 
     Vec<2, T> range(unsigned int dim) const {
         BOOST_ASSERT(dim < N);
-        return {m_min[dim], m_max[dim]};
+        return {ScalarOrMultiIndex<N, T>::element(m_min, dim),
+                ScalarOrMultiIndex<N, T>::element(m_max, dim)};
     }
 
     bool intersects(const BoundingBox<N, T>& that) const
