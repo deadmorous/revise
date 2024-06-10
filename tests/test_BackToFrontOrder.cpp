@@ -19,6 +19,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include "BackToFrontOrder.hpp"
 #include "BoundingBox.hpp"
+#include "NonUniformIndexRangeSplitter.hpp"
 #include "UniformIndexRangeSplitter.hpp"
 
 #include <gtest/gtest.h>
@@ -389,6 +390,42 @@ TEST(UniformIndexRangeSplitterTest, basic)
     ASSERT_DEATH(
         { UniformIndexRangeSplitter({10, 20}, {101, 100}); },
         ".*Assertion `m_coord_range\\.is_normalized\\(\\)' failed\\." );
+}
+
+TEST(NonUniformIndexRangeSplitterTest, basic)
+{
+    using IR = IndexRange;
+    real_type split_coords[] = {102, 105, 109};
+    auto splitter = NonUniformIndexRangeSplitter{5, split_coords, {100, 110}};
+
+    auto empty_r = IndexRange::make_empty();
+    EXPECT_EQ(splitter(  0.  ), IndexRangeSplit( empty_r,  ~0u, IR{5, 9} ));
+    EXPECT_EQ(splitter( 99.99), IndexRangeSplit( empty_r,  ~0u, IR{5, 9} ));
+    EXPECT_EQ(splitter(100.01), IndexRangeSplit( empty_r,   5u, IR{6, 9} ));
+    EXPECT_EQ(splitter(101.  ), IndexRangeSplit( empty_r,   5u, IR{6, 9} ));
+    EXPECT_EQ(splitter(101.99), IndexRangeSplit( empty_r,   5u, IR{6, 9} ));
+    EXPECT_EQ(splitter(102.01), IndexRangeSplit( IR{5, 6},  6u, IR{7, 9} ));
+    EXPECT_EQ(splitter(103.  ), IndexRangeSplit( IR{5, 6},  6u, IR{7, 9} ));
+    EXPECT_EQ(splitter(104.  ), IndexRangeSplit( IR{5, 6},  6u, IR{7, 9} ));
+    EXPECT_EQ(splitter(104.99), IndexRangeSplit( IR{5, 6},  6u, IR{7, 9} ));
+    EXPECT_EQ(splitter(105.01), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
+    EXPECT_EQ(splitter(106.  ), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
+    EXPECT_EQ(splitter(107.  ), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
+    EXPECT_EQ(splitter(108.  ), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
+    EXPECT_EQ(splitter(108.99), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
+    EXPECT_EQ(splitter(109.01), IndexRangeSplit( IR{5, 8},  8u, empty_r  ));
+    EXPECT_EQ(splitter(109.99), IndexRangeSplit( IR{5, 8},  8u, empty_r  ));
+    EXPECT_EQ(splitter(110.01), IndexRangeSplit( IR{5, 9}, ~0u, empty_r  ));
+    EXPECT_EQ(splitter(100000), IndexRangeSplit( IR{5, 9}, ~0u, empty_r  ));
+
+    ASSERT_DEATH(
+        { NonUniformIndexRangeSplitter(5, split_coords, {110, 100}); },
+        ".*Assertion `coord_range\\.is_normalized\\(\\)' failed\\.");
+
+    ASSERT_DEATH(
+        { NonUniformIndexRangeSplitter(5, split_coords, {103, 110}); },
+        ".*Assertion `std::is_sorted\\(m_coords.begin\\(\\),"
+        " m_coords.end\\(\\)\\)' failed\\.");
 }
 
 TEST(BackToFrontOrderTest, basic_1d)
