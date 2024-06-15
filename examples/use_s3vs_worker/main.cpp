@@ -89,6 +89,7 @@ struct AppOptions
         AppOptions opts;
         opts.model = "input-model-name";
         opts.output = "output-file-name";
+        opts.blocks.indexBox.max = { 1, 1, 1 };
         return opts;
     }
 };

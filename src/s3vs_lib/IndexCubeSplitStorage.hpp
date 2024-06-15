@@ -19,8 +19,8 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #pragma once
 
-#include "IndexBoxSorter.hpp"
-#include "IndexCubeSplitter.hpp"
+#include "BackToFrontOrder.hpp"
+#include "IndexCubeSplitter2.hpp"
 
 namespace s3vs
 {
@@ -28,8 +28,8 @@ namespace s3vs
 class IndexCubeSplitStorage
 {
 public:
-    using BBox = s3dmm::IndexBoxSorter::BBox;
-    using VBBox = s3dmm::IndexBoxSorter::VBBox;
+    using BBox = s3dmm::BoundingBox<3, unsigned int>;
+    using VBBox = std::vector<BBox>;
 
     void setSplitCount(unsigned int splitCount)
     {
@@ -41,23 +41,18 @@ public:
     {
         return m_splitCount;
     }
-    void setDirection(const s3dmm::Vec3d& dir)
+    void setEyePosition(const s3dmm::Vec3d& eye)
     {
-        m_dir = dir;
+        m_eye = eye;
     }
-    s3dmm::Vec3d getDirection() const
+    s3dmm::Vec3d getEyePosition() const
     {
-        return m_dir;
+        return m_eye;
     }
     VBBox getBoxesSorted(unsigned int level)
     {
         resizeSortedBoxes(level);
-        return m_sortedBoxes[level].getBoxesSorted(m_dir);
-    }
-    VBBox getBoxes(unsigned int level)
-    {
-        resizeSortedBoxes(level);
-        return m_sortedBoxes[level].getBoxes();
+        return m_sortedBoxes[level].getBoxesSorted(m_eye);
     }
 
 private:
@@ -65,31 +60,33 @@ private:
     {
     public:
         SortedBoxes(unsigned int level, unsigned int splitCount)
+            : m_splitter{ level, splitCount, default_bbox() }
+        {}
+
+        VBBox getBoxesSorted(const s3dmm::Vec3d& eye)
         {
-            s3dmm::IndexCubeSplitter splitter;
-            auto boxes = splitter.split(level, splitCount);
-            decltype(boxes) b;
-            for (auto box: boxes)
-                if (!box.empty() && box.size()[0] && box.size()[1] && box.size()[2])
-                    b.push_back(box);
-            m_sorter.setBoxes(b);
-        }
-        VBBox getBoxesSorted(const s3dmm::Vec3d& dir)
-        {
-            m_sorter.setDirection(dir);
-            return m_sorter.getBoxesSorted();
-        }
-        VBBox getBoxes() const
-        {
-            return m_sorter.getBoxes();
+            auto result = VBBox{};
+            result.reserve(m_splitter.split_count());
+            auto b2fo = s3dmm::BackToFrontOrder{m_splitter};
+            for (const auto& block: b2fo.range(eye))
+                result.push_back(block);
+            return result;
         }
 
     private:
-        s3dmm::IndexBoxSorter m_sorter;
+        using CoordBBox = s3dmm::BoundingBox<3, s3dmm::real_type>;
+        static CoordBBox default_bbox() noexcept
+        {
+            return CoordBBox{}
+                << s3dmm::Vec3d{ -5, -5, -5 }
+                << s3dmm::Vec3d{  5,  5,  5 };
+        }
+
+        s3dmm::IndexCubeSplitter2<3> m_splitter;
     };
     std::vector<SortedBoxes> m_sortedBoxes;
     unsigned int m_splitCount{1};
-    s3dmm::Vec3d m_dir{1, 0, 0};
+    s3dmm::Vec3d m_eye{0, 0, 10};
 
     void resizeSortedBoxes(unsigned int level)
     {

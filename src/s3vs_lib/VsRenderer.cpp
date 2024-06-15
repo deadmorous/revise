@@ -1066,10 +1066,10 @@ void VsRenderer::continueRendering(const silver_bullets::sync::CancelController:
     auto& md = sharedState.fieldSvc->metadata();
     auto levelCount = md.maxFullLevel() + 1;
 
-    auto dir = [&]() {
+    auto eye = [&]() {
         vl::Vector3<s3dmm::real_type> eye, at, up, right;
         sharedState.cameraTransform.getAsLookAt(eye, at, up, right);
-        return s3dmm::Vec3d({eye[0] - at[0], eye[1] - at[1], eye[2] - at[2]});
+        return s3dmm::Vec3d({eye[0], eye[1], eye[2]});
     }();
 
     auto minLevel = 0u;
@@ -1078,7 +1078,7 @@ void VsRenderer::continueRendering(const silver_bullets::sync::CancelController:
         levelCount = minLevel + 1;
     }
 
-    m_indexCubeSplitStorage.setDirection(dir);
+    m_indexCubeSplitStorage.setEyePosition(eye);
 
     for (size_t level = minLevel; (level < levelCount) && !isCancelled; ++level)
     {
@@ -1097,12 +1097,7 @@ void VsRenderer::continueRendering(const silver_bullets::sync::CancelController:
             auto& renderInput = boost::any_cast<RenderFunc::Input&>(
                 graph.input(workers[i], 0));
             renderInput.level = level;
-            renderInput.indexBox << boxes[i].min();
-            auto v = boxes[i].max();
-            // VsWorkerInterface includes max into the range, when
-            // m_indexCubeSplitStorage does not
-            v -= 1;
-            renderInput.indexBox << v;
+            renderInput.indexBox << boxes[i].min() << boxes[i].max();
 #ifdef S3DMM_ENABLE_FRAME_IMAGE_PARTS_SAVING
             graph.input(workers[i], 1) = TaskAuxParam{
                 m_frameNumberSaving,

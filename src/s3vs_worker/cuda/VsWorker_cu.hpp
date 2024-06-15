@@ -22,7 +22,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "silver_bullets/factory.hpp"
 #include "s3vs/VsWorkerInterface.hpp"
 #include "s3dmm_cuda/DenseFieldRenderer_cu.hpp"
-#include "BlockSorter.hpp"
 
 namespace s3vs
 {
@@ -59,7 +58,8 @@ private:
     s3dmm::DenseFieldRenderer_cu m_fieldRenderer;
     s3dmm::DeviceVector<std::uint32_t> m_viewport;
     std::vector<std::uint32_t> m_viewportHostBuf;
-    s3dmm::BlockSorter m_blockSorter;
+    std::vector<s3dmm::Vec3u> m_sortedBlocks;
+
 #ifdef S3DMM_ENABLE_WORKER_TIME_ESTIMATION
     std::vector<VsWorkerTimestamps> m_timestamps;
 #endif // S3DMM_ENABLE_WORKER_TIME_ESTIMATION
