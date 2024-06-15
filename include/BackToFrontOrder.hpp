@@ -33,6 +33,31 @@ namespace s3dmm
 {
 
 template <typename Blocks>
+concept IndexedBlocksType =
+    requires(const Blocks blocks)
+{
+    { Blocks::dim } -> std::convertible_to<unsigned int>;
+    requires(Blocks::dim == 1 || Blocks::dim == 2 || Blocks::dim == 3);
+
+    typename Blocks::Block;
+    typename Blocks::Splitter;
+
+
+    { blocks.at( ScalarOrMultiIndex_t<Blocks::dim, unsigned int>{} ) }
+        -> std::same_as<typename Blocks::Block>;
+
+    { blocks.begin_index() } ->
+        std::same_as<ScalarOrMultiIndex_t<Blocks::dim, unsigned int>>;
+
+    { blocks.end_index() } ->
+        std::same_as<ScalarOrMultiIndex_t<Blocks::dim, unsigned int>>;
+
+    { blocks.index_range_splitter(0u) } ->
+        std::same_as<typename Blocks::Splitter>;
+};
+
+
+template <IndexedBlocksType Blocks>
 class BackToFrontOrder
 {
 public:
