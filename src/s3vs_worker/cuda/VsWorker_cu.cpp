@@ -20,6 +20,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "VsWorker_cu.hpp"
 
 #include "BackToFrontOrder.hpp"
+#include "BlockOrderUtil.hpp"
 #include "MacroBlock.hpp"
 
 #include <QImage>
@@ -219,38 +220,6 @@ void VsWorker_cu::updateRenderQuality()
 
 void VsWorker_cu::updateRenderLevel()
 {
-}
-
-const s3dmm::BoundingBox<3, s3dmm::real_type> boundingBoxOfIndexBox(
-    unsigned int level, const s3dmm::BoundingBox<3, unsigned int>& box)
-{
-    auto cubesPerLevel = 1 << level;
-    constexpr auto TopLevelCubeHalfSize = 5.f;
-    auto cubeHalfSize = TopLevelCubeHalfSize / cubesPerLevel;
-    auto cubeCenterCoord = [&](unsigned int idx) {
-        return -TopLevelCubeHalfSize + cubeHalfSize*(1 + (idx << 1));
-    };
-    auto cubeCenter = [&](const s3dmm::Vec3u& idx)
-        -> s3dmm::Vec3d
-    {
-        return {
-            cubeCenterCoord(idx[0]),
-            cubeCenterCoord(idx[1]),
-            cubeCenterCoord(idx[2]) };
-    };
-    auto d = s3dmm::Vec3d{ cubeHalfSize, cubeHalfSize, cubeHalfSize };
-    auto min = cubeCenter(box.min()) - d;
-    auto box_max = box.max();
-    box_max -= 1;   // Because `box` contains integer `OpenRange`s.
-    auto max = cubeCenter(box_max) + d;
-    return s3dmm::BoundingBox<3, s3dmm::real_type>{} << min << max;
-}
-
-s3dmm::Vec3d eyeFromTransform(const Matrix4r& transform)
-{
-    vl::Vector3<s3dmm::real_type> eye, at, up, right;
-    transform.getAsLookAt(eye, at, up, right);
-    return { eye[0], eye[1], eye[2] };
 }
 
 RgbaImagePart VsWorker_cu::renderScenePart(

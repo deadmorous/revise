@@ -18,8 +18,11 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 */
 
 #include "VsWorker.hpp"
+
+#include "BackToFrontOrder.hpp"
+#include "BlockOrderUtil.hpp"
+#include "MacroBlock.hpp"
 #include "VsWorkerInit.hpp"
-#include "InitBlockSorter.hpp"
 
 #include <QImage>
 
@@ -341,8 +344,18 @@ RgbaImagePart VsWorker::renderScenePart(
         return imagePart;
 
     m_applet->rendering()->as<vl::Rendering>()->renderer()->setClearFlags(vl::CF_CLEAR_COLOR_DEPTH);
-    initBlockSorter(m_blockSorter, m_sharedState->cameraTransform, subtrees.indexBox);
-    for (const auto& rootIndex: m_blockSorter.getSortedBlocks())
+
+    auto macro_block = s3dmm::MacroBlock{
+        subtrees.indexBox,
+        boundingBoxOfIndexBox(subtrees.level, subtrees.indexBox) };
+
+    auto b2fo = s3dmm::BackToFrontOrder{ macro_block };
+    m_sortedBlocks.clear();
+    auto eye = eyeFromTransform(m_sharedState->cameraTransform);
+    for (const auto& block : b2fo.range(eye))
+        m_sortedBlocks.push_back(block);
+
+    for (const auto& rootIndex: m_sortedBlocks)
     {
         if (isCancelled)
             break;

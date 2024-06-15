@@ -25,8 +25,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include "vlCore/Object.hpp"
 #include "vlGraphics/OpenGLContext.hpp"
 
-#include "BlockSorter.hpp"
-
 class App_MyVolumeRaycast;
 class OpenGlSetup;
 
@@ -75,7 +73,7 @@ private:
     vl::ref<App_MyVolumeRaycast> m_applet;
     std::unique_ptr<MyOpenGlContext> m_ctx;
     const VsRenderSharedState* m_sharedState = nullptr;
-    s3dmm::BlockSorter m_blockSorter;
+    std::vector<s3dmm::Vec3u> m_sortedBlocks;
 
     void updateProblemPath();
     void updateViewportSize();
