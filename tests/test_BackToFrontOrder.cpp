@@ -19,6 +19,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include "BackToFrontOrder.hpp"
 #include "BoundingBox.hpp"
+#include "MacroBlock.hpp"
 #include "UniformIndexRangeSplitter.hpp"
 
 #include <gtest/gtest.h>
@@ -37,47 +38,22 @@ using BBox = BoundingBox<N, real_type>;
 // In the tests below, IndexedBlocksType is used as a template parameter
 // to BackToFrontOrder. Therefore, it satisfies the IndexedBlocksType concept.
 template <unsigned int N>
-class IndexCube
+class IndexCube : public MacroBlock<N>
 {
 public:
-
-    using IndexVecTraits = ScalarOrMultiIndex<N, unsigned int>;
-    using Block = IndexVecTraits::type;
-    using IndexVec = IndexVecTraits::type;
-    using Splitter = UniformIndexRangeSplitter;
-
-    static constexpr auto dim = N;
-
     explicit IndexCube(unsigned int size,
                        const BBox<N>& bbox):
-        m_size{ size },
-        m_bbox{ bbox }
+        MacroBlock<N>{ IndexBox{} << filled(0) << filled(size), bbox }
     {}
 
-    Block at(const IndexVec& pos) const noexcept
-    { return pos; }
-
-    IndexVec begin_index() const noexcept
-    {
-        return IndexVecTraits::fromMultiIndex(
-            MultiIndex<N, unsigned int>::filled(0) );
-    }
-
-    IndexVec end_index() const noexcept
-    {
-        return IndexVecTraits::fromMultiIndex(
-            MultiIndex<N, unsigned int>::filled(m_size) );
-    }
-
-    Splitter index_range_splitter(unsigned int axis) const noexcept
-    {
-        BOOST_ASSERT(axis < dim);
-        return { {0, m_size}, CoordRange::from_vec(m_bbox.range(axis)) };
-    }
-
 private:
-    unsigned int m_size;
-    BBox<N> m_bbox;
+    using MIndex = MultiIndex<N, unsigned int>;
+    using IndexVecTraits = typename MacroBlock<N>::IndexVecTraits;
+    using IndexVec = IndexVecTraits::type;
+    using IndexBox = typename MacroBlock<N>::IndexBox;
+
+    static IndexVec filled(unsigned int v) noexcept
+    { return IndexVecTraits::fromMultiIndex(MIndex::filled(v)); }
 };
 
 
