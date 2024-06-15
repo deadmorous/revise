@@ -19,8 +19,9 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #pragma once
 
-#include "Vec.hpp"
+#include "OpenRange.hpp"
 #include "ScalarOrMultiIndex.hpp"
+#include "Vec.hpp"
 
 namespace s3dmm {
 
@@ -72,7 +73,7 @@ public:
         return m_max - m_min;
     }
 
-    Vec<2, T> range(unsigned int dim) const {
+    OpenRange<T> range(unsigned int dim) const {
         BOOST_ASSERT(dim < N);
         return {ScalarOrMultiIndex<N, T>::element(m_min, dim),
                 ScalarOrMultiIndex<N, T>::element(m_max, dim)};
