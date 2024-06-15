@@ -19,7 +19,6 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 
 #include "BackToFrontOrder.hpp"
 #include "BoundingBox.hpp"
-#include "NonUniformIndexRangeSplitter.hpp"
 #include "UniformIndexRangeSplitter.hpp"
 
 #include <gtest/gtest.h>
@@ -35,6 +34,8 @@ using namespace s3dmm;
 template <unsigned int N>
 using BBox = BoundingBox<N, real_type>;
 
+// In the tests below, IndexedBlocksType is used as a template parameter
+// to BackToFrontOrder. Therefore, it satisfies the IndexedBlocksType concept.
 template <unsigned int N>
 class IndexCube
 {
@@ -79,6 +80,9 @@ private:
     BBox<N> m_bbox;
 };
 
+
+// BlockOrderPrinter prints the results of block ordering obtained using
+// BackToFrontOrder. We use it to formulate assertions in the tests.
 template <unsigned int N>
 struct BlockOrderPrinter;
 
@@ -261,6 +265,9 @@ private:
 };
 
 
+// format_b2fo_result formats the result of ordering of the blocks of
+// IndexCube<N> with specified size and bounding box with all edges [0, 1];
+// the eye parameter is passed to BackToFrontOrder::range.
 template <unsigned int N>
     std::string format_b2fo_result(
         unsigned int size,
@@ -298,155 +305,9 @@ template <unsigned int N>
 };
 
 
-
-template <typename T>
-class OpenRangeTest : public testing::Test {};
-
-TYPED_TEST_SUITE_P(OpenRangeTest);
-
-TYPED_TEST_P(OpenRangeTest, Basic)
-{
-    using T = TypeParam;
-    using R = OpenRange<T>;
-
-    auto empty_r = R::make_empty();
-    EXPECT_TRUE(empty_r.empty());
-    EXPECT_FALSE(empty_r.is_normalized());
-    EXPECT_EQ(empty_r.normalized(), empty_r);
-
-    auto empty_r2 = R{10, 10};
-    EXPECT_TRUE(empty_r2.empty());
-    EXPECT_FALSE(empty_r2.is_normalized());
-    EXPECT_EQ(empty_r2.normalized(), empty_r2);
-
-    EXPECT_EQ(empty_r, empty_r2);
-
-    auto r1 = R{1, 5};
-    EXPECT_FALSE(r1.empty());
-    EXPECT_TRUE(r1.is_normalized());
-    EXPECT_EQ(r1, r1.normalized());
-
-    auto r2 = R{5, 1};
-    EXPECT_FALSE(r2.empty());
-    EXPECT_FALSE(r2.is_normalized());
-    EXPECT_NE(r2, r2.normalized());
-    EXPECT_EQ(r1, r2.normalized());
-
-    r2.normalize();
-    EXPECT_EQ(r1, r2);
-
-    using Base = MultiIndex<2, T>;
-    Base empty_r_base = empty_r;
-    Base empty_r2_base = empty_r2;
-    EXPECT_NE(empty_r_base, empty_r2_base);
-    EXPECT_EQ(empty_r_base, empty_r);
-    EXPECT_EQ(empty_r2_base, empty_r2);
-}
-
-REGISTER_TYPED_TEST_SUITE_P(OpenRangeTest, Basic);
-
-using OpenRangeTypes = ::testing::Types<unsigned int, real_type>;
-INSTANTIATE_TYPED_TEST_SUITE_P(Typed, OpenRangeTest, OpenRangeTypes);
-
-TEST(UniformIndexRangeSplitterTest, basic)
-{
-    using IR = IndexRange;
-    auto splitter = UniformIndexRangeSplitter{{10, 20}, {100, 101}};
-
-    auto empty_r = IndexRange::make_empty();
-    EXPECT_EQ(splitter(  0.  ), IndexRangeSplit( empty_r,   ~0u, IR{10, 20} ));
-    EXPECT_EQ(splitter( 99.99), IndexRangeSplit( empty_r,   ~0u, IR{10, 20} ));
-    EXPECT_EQ(splitter(100.01), IndexRangeSplit( empty_r,   10u, IR{11, 20} ));
-    EXPECT_EQ(splitter(100.02), IndexRangeSplit( empty_r,   10u, IR{11, 20} ));
-    EXPECT_EQ(splitter(100.07), IndexRangeSplit( empty_r,   10u, IR{11, 20} ));
-    EXPECT_EQ(splitter(100.09), IndexRangeSplit( empty_r,   10u, IR{11, 20} ));
-    EXPECT_EQ(splitter(100.11), IndexRangeSplit( IR{10,11}, 11u, IR{12, 20} ));
-    EXPECT_EQ(splitter(100.15), IndexRangeSplit( IR{10,11}, 11u, IR{12, 20} ));
-    EXPECT_EQ(splitter(100.19), IndexRangeSplit( IR{10,11}, 11u, IR{12, 20} ));
-    EXPECT_EQ(splitter(100.21), IndexRangeSplit( IR{10,12}, 12u, IR{13, 20} ));
-    EXPECT_EQ(splitter(100.25), IndexRangeSplit( IR{10,12}, 12u, IR{13, 20} ));
-    EXPECT_EQ(splitter(100.29), IndexRangeSplit( IR{10,12}, 12u, IR{13, 20} ));
-    EXPECT_EQ(splitter(100.31), IndexRangeSplit( IR{10,13}, 13u, IR{14, 20} ));
-    EXPECT_EQ(splitter(100.39), IndexRangeSplit( IR{10,13}, 13u, IR{14, 20} ));
-    EXPECT_EQ(splitter(100.41), IndexRangeSplit( IR{10,14}, 14u, IR{15, 20} ));
-    EXPECT_EQ(splitter(100.49), IndexRangeSplit( IR{10,14}, 14u, IR{15, 20} ));
-    EXPECT_EQ(splitter(100.51), IndexRangeSplit( IR{10,15}, 15u, IR{16, 20} ));
-    EXPECT_EQ(splitter(100.59), IndexRangeSplit( IR{10,15}, 15u, IR{16, 20} ));
-    EXPECT_EQ(splitter(100.61), IndexRangeSplit( IR{10,16}, 16u, IR{17, 20} ));
-    EXPECT_EQ(splitter(100.69), IndexRangeSplit( IR{10,16}, 16u, IR{17, 20} ));
-    EXPECT_EQ(splitter(100.71), IndexRangeSplit( IR{10,17}, 17u, IR{18, 20} ));
-    EXPECT_EQ(splitter(100.79), IndexRangeSplit( IR{10,17}, 17u, IR{18, 20} ));
-    EXPECT_EQ(splitter(100.81), IndexRangeSplit( IR{10,18}, 18u, IR{19, 20} ));
-    EXPECT_EQ(splitter(100.89), IndexRangeSplit( IR{10,18}, 18u, IR{19, 20} ));
-    EXPECT_EQ(splitter(100.91), IndexRangeSplit( IR{10,19}, 19u, empty_r    ));
-    EXPECT_EQ(splitter(100.99), IndexRangeSplit( IR{10,19}, 19u, empty_r    ));
-    EXPECT_EQ(splitter(101.01), IndexRangeSplit( IR{10,20}, ~0u, empty_r    ));
-    EXPECT_EQ(splitter(999.99), IndexRangeSplit( IR{10,20}, ~0u, empty_r    ));
-
-    ASSERT_DEATH(
-        { UniformIndexRangeSplitter({20, 10}, {100, 101}); },
-        ".*Assertion `m_index_range\\.is_normalized\\(\\)' failed\\." );
-
-    ASSERT_DEATH(
-        { UniformIndexRangeSplitter({10, 20}, {101, 100}); },
-        ".*Assertion `m_coord_range\\.is_normalized\\(\\)' failed\\." );
-}
-
-TEST(NonUniformIndexRangeSplitterTest, basic)
-{
-    using IR = IndexRange;
-    real_type split_coords[] = {102, 105, 109};
-    auto splitter = NonUniformIndexRangeSplitter{5, split_coords, {100, 110}};
-
-    auto empty_r = IndexRange::make_empty();
-    EXPECT_EQ(splitter(  0.  ), IndexRangeSplit( empty_r,  ~0u, IR{5, 9} ));
-    EXPECT_EQ(splitter( 99.99), IndexRangeSplit( empty_r,  ~0u, IR{5, 9} ));
-    EXPECT_EQ(splitter(100.01), IndexRangeSplit( empty_r,   5u, IR{6, 9} ));
-    EXPECT_EQ(splitter(101.  ), IndexRangeSplit( empty_r,   5u, IR{6, 9} ));
-    EXPECT_EQ(splitter(101.99), IndexRangeSplit( empty_r,   5u, IR{6, 9} ));
-    EXPECT_EQ(splitter(102.01), IndexRangeSplit( IR{5, 6},  6u, IR{7, 9} ));
-    EXPECT_EQ(splitter(103.  ), IndexRangeSplit( IR{5, 6},  6u, IR{7, 9} ));
-    EXPECT_EQ(splitter(104.  ), IndexRangeSplit( IR{5, 6},  6u, IR{7, 9} ));
-    EXPECT_EQ(splitter(104.99), IndexRangeSplit( IR{5, 6},  6u, IR{7, 9} ));
-    EXPECT_EQ(splitter(105.01), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
-    EXPECT_EQ(splitter(106.  ), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
-    EXPECT_EQ(splitter(107.  ), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
-    EXPECT_EQ(splitter(108.  ), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
-    EXPECT_EQ(splitter(108.99), IndexRangeSplit( IR{5, 7},  7u, IR{8, 9} ));
-    EXPECT_EQ(splitter(109.01), IndexRangeSplit( IR{5, 8},  8u, empty_r  ));
-    EXPECT_EQ(splitter(109.99), IndexRangeSplit( IR{5, 8},  8u, empty_r  ));
-    EXPECT_EQ(splitter(110.01), IndexRangeSplit( IR{5, 9}, ~0u, empty_r  ));
-    EXPECT_EQ(splitter(100000), IndexRangeSplit( IR{5, 9}, ~0u, empty_r  ));
-
-    ASSERT_DEATH(
-        { NonUniformIndexRangeSplitter(5, split_coords, {110, 100}); },
-        ".*Assertion `coord_range\\.is_normalized\\(\\)' failed\\.");
-
-    ASSERT_DEATH(
-        { NonUniformIndexRangeSplitter(5, split_coords, {103, 110}); },
-        ".*Assertion `std::is_sorted\\(m_coords.begin\\(\\),"
-        " m_coords.end\\(\\)\\)' failed\\.");
-}
-
-TEST(BackToFrontOrderTest, basic_1d)
-{
-    EXPECT_EQ(
-        format_b2fo_result<1>(8, -1),
-        "     7        6        5        4        3        2        1        0   ");
-    EXPECT_EQ(
-        format_b2fo_result<1>(8, 0.01),
-        " *   7 *      6        5        4        3        2        1        0   ");
-    EXPECT_EQ(
-        format_b2fo_result<1>(8, 0.49),
-        "     0        1        2    *   7 *      6        5        4        3   ");
-    EXPECT_EQ(
-        format_b2fo_result<1>(8, 0.99),
-        "     0        1        2        3        4        5        6    *   7 * ");
-    EXPECT_EQ(
-        format_b2fo_result<1>(8, 2),
-        "     0        1        2        3        4        5        6        7   ");
-}
-
+// formats test assertion. Arguments are same as for format_b2fo_result.
+// The outut of this function should be checked manually and copy-pasted
+// to a test function.
 template <unsigned int N>
 std::string ft(
     unsigned int size,
@@ -505,7 +366,40 @@ std::string ft(
     return result.str();
 }
 
-TEST(BackToFrontOrderTest, basic_2d)
+// Tests BackToFrontOrder<1>.
+TEST(BackToFrontOrderTest, Basic_1d)
+{
+    /*
+    Assertions below are generated using the following code,
+    and then tested manually.
+
+    for (auto x : {-1., 0.01, 0.49, 0.99, 2.})
+        std::cout << ft<1>(7, x) << std::endl;
+    */
+
+    EXPECT_EQ(
+        format_b2fo_result<1>(7, -1),
+        "     6        5        4        3        2        1        0   ");
+
+    EXPECT_EQ(
+        format_b2fo_result<1>(7, 0.01),
+        " *   6 *      5        4        3        2        1        0   ");
+
+    EXPECT_EQ(
+        format_b2fo_result<1>(7, 0.49),
+        "     0        1        2    *   6 *      5        4        3   ");
+
+    EXPECT_EQ(
+        format_b2fo_result<1>(7, 0.99),
+        "     0        1        2        3        4        5    *   6 * ");
+
+    EXPECT_EQ(
+        format_b2fo_result<1>(7, 2),
+        "     0        1        2        3        4        5        6   ");
+}
+
+// Tests BackToFrontOrder<2>.
+TEST(BackToFrontOrderTest, Basic_2d)
 {
     /*
     Assertions below are generated using the following code,
@@ -737,10 +631,10 @@ TEST(BackToFrontOrderTest, basic_2d)
         "    26       28       30    *  61 *     46       44       41       38   \n"
         "    23       25       27    *  60 *     43       40       37       35   \n"
         "    21       22       24    *  59 *     39       36       34       33   \n");
-
 }
 
-TEST(BackToFrontOrderTest, basic_3d)
+// Tests BackToFrontOrder<3>.
+TEST(BackToFrontOrderTest, Basic_3d)
 {
     /*
     Assertion below is generated using the following code,
