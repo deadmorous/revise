@@ -20,98 +20,179 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #pragma once
 
 #include "BoundingBox.hpp"
+#include "NonUniformIndexRangeSplitter.hpp"
+
 #include "s3dmm/IncMultiIndex.hpp"
+
+#include <boost/assert.hpp>
+
+#include <algorithm>
+#include <array>
 
 namespace s3dmm
 {
 
-class SplitNumber
+template <unsigned int N>
+class IndexCubeSplitter final
 {
 public:
-    SplitNumber(unsigned int number, unsigned int split) :
-      m_number(number), m_split(split)
+    using IndexVecTraits = ScalarOrMultiIndex<N, unsigned int>;
+    using Block = BoundingBox<N, unsigned int>;
+    using IndexVec = IndexVecTraits::type;
+    using Splitter = NonUniformIndexRangeSplitter;
+
+    static constexpr auto dim = N;
+
+
+    IndexCubeSplitter(unsigned int level,
+                      unsigned int split_count,
+                      const BoundingBox<N, real_type>& bbox):
+        m_level{level},
+        m_split_count{split_count},
+        m_bbox{bbox},
+        m_axis_split{init_axis_split()}
+    {}
+
+
+    Block at(const IndexVec& pos) const noexcept
     {
-        m_count = m_number / m_split;
-        m_remainder = m_number % m_split;
+        auto min = IndexVec{};
+        auto max = IndexVec{};
+
+        for (unsigned int axis=0; axis<dim; ++axis)
+        {
+            const auto& split_indices = m_axis_split[axis].split_indices;
+            auto block_index = IndexVecTraits::element(pos, axis);
+            IndexVecTraits::element(min, axis) = split_indices[block_index];
+            IndexVecTraits::element(max, axis) = split_indices[block_index+1];
+        }
+
+        return Block{} << min << max;
     }
 
-    unsigned int operator[](unsigned int idx) const
+    IndexVec begin_index() const noexcept
+    { return IndexVecTraits::fromMultiIndex( MIndex::filled(0) ); }
+
+    IndexVec end_index() const noexcept
     {
-        return idx < m_remainder ? m_count + 1 : m_count;
+        IndexVec result;
+        for (unsigned int axis=0; axis<dim; ++axis)
+            IndexVecTraits::element(result, axis) =
+                m_axis_split[axis].splitter.index_range()[1];
+        return result;
+    }
+
+    Splitter index_range_splitter(unsigned int axis) const noexcept
+    { return m_axis_split[axis].splitter; }
+
+
+    unsigned int level() const noexcept
+    { return m_level; }
+
+    unsigned int split_count() const noexcept
+    { return m_split_count; }
+
+    const BoundingBox<N, real_type>& bbox() const noexcept
+    { return m_bbox; }
+
+    auto all_blocks(bool add_trailing_empty) const
+    {
+        auto result = std::vector< Block >{};
+        result.reserve(m_split_count);
+
+        auto begin = begin_index();
+        auto end = end_index();
+        auto index = begin;
+
+        do
+            result.push_back(at(index));
+        while (incMultiIndex(index, begin, end));
+
+        if (add_trailing_empty)
+            // Add empty boxes to match split count
+            while (result.size() < m_split_count)
+                result.push_back({});
+
+        return result;
     }
 
 private:
-    unsigned int m_number;
-    unsigned int m_split;
-    unsigned int m_count;
-    unsigned int m_remainder;
-};
+    using MIndex = MultiIndex<dim, unsigned int>;
 
-class IndexCubeSplitter
-{
-public:
-    using BBox = BoundingBox<3, unsigned int>;
-    std::vector<BBox> split(unsigned int level, unsigned int splitCount_)
+    struct AxisSplit
     {
-        std::vector<BBox> res(splitCount_);
+        std::vector<unsigned int> split_indices;
+        NonUniformIndexRangeSplitter splitter;
+    };
 
-        if (!splitCount_)
+    using AxisSplitArr =
+        std::array< AxisSplit, N >;
+
+    AxisSplitArr init_axis_split()
+    {
+        BOOST_ASSERT(m_split_count > 0);
+        auto size = 1u << m_level;
+        auto max_split_count = 1u << (3u*m_level);
+        unsigned int axis_split_counts[dim];
+        auto split_count = std::min(max_split_count, m_split_count);
+
+        // Note: The ` && axis<10` condition is redundant, but, perhaps due to
+        // a compiler bug (g++ 11.4.0), the loop keeps running forever
+        // without it.
+        for (unsigned int axis=0; axis<dim && axis<10; ++axis)
         {
-            return res;
+            if (split_count <= size)
+            {
+                axis_split_counts[axis] = split_count;
+                split_count = 1;
+            }
+            else
+            {
+                axis_split_counts[axis] = size;
+                split_count = std::max(1u, split_count / size);
+            }
         }
 
-        const unsigned int splitCountMax = 1 << (3 * level);
-        const unsigned int splitCount = std::min(splitCount_, splitCountMax);
-        const unsigned int splitCountEdge = 1 << level;
-
-        if (splitCount <= splitCountEdge)
+        auto make_axis_split =
+            [&](size_t axis) -> AxisSplit
         {
-            // simply split into slices in the 0-st dimension
-            SplitNumber sn(splitCountEdge, splitCount);
-            Vec3u vmin{0, 0, 0};
-            for (auto i = 0U; i < splitCount; ++i)
+            auto split_count = axis_split_counts[axis];
+            BOOST_ASSERT(split_count > 0);
+            auto split_indices = std::vector<unsigned int>( split_count + 1 );
+            split_indices.front() = 0;
+            split_indices.back() = size;
+            auto split_coords = std::vector<real_type>( split_count - 1 );
+            auto coord_range = m_bbox.range(axis);
+            for (unsigned int i=1; i<split_count; ++i)
             {
-                res[i] << vmin;
-                vmin[0] += sn[i];
-                res[i] << Vec3u({vmin[0], splitCountEdge, splitCountEdge});
+                auto split_index = i*size / split_count;
+                split_indices[i] = split_index;
+                split_coords[i-1] =
+                    coord_range.origin() +
+                    coord_range.length() * split_index / size;
             }
-            return res;
-        }
-
-        Vec3u range{1, 1, 1};
-        Vec3u step{splitCountEdge, splitCountEdge, splitCountEdge};
-        {
-            auto i = 0U;
-            auto remainder = splitCount;
-            for (; remainder >= splitCountEdge; remainder /= splitCountEdge)
-            {
-                range[i] = splitCountEdge;
-                step[i] = 1;
-                ++i;
-            }
-            if (i < 3U)
-            {
-                while (remainder > 1)
+            return
                 {
-                    range[i] <<= 1;
-                    remainder >>= 1;
-                }
-                step[i] = splitCountEdge / range[i];
-            }
-        }
+                    .split_indices = split_indices,
+                    .splitter =
+                        NonUniformIndexRangeSplitter{
+                            0u,
+                            split_coords,
+                            m_bbox.range(axis) } };
+        };
 
-        Vec3u index{0, 0, 0};
-        for (auto i = 0;; ++i)
-        {
-            auto v = elementwiseMultiply(index, step);
-            res[i] << v << (v + step);
-            if (!incMultiIndex(index, Vec3u{0, 0, 0}, range))
-            {
-                break;
-            }
-        }
-        return res;
+        return
+            [&]<size_t... axis>(std::index_sequence<axis...>)
+                -> AxisSplitArr
+            { return { make_axis_split(axis) ... }; }
+            (std::make_index_sequence<dim>());
     }
+
+    unsigned int m_level;
+    unsigned int m_split_count;
+    BoundingBox<N, real_type> m_bbox;
+
+    AxisSplitArr m_axis_split;
 };
 
 } // namespace s3dmm

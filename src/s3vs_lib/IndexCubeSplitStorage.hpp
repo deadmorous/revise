@@ -20,7 +20,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #pragma once
 
 #include "BackToFrontOrder.hpp"
-#include "IndexCubeSplitter2.hpp"
+#include "IndexCubeSplitter.hpp"
 
 namespace s3vs
 {
@@ -82,7 +82,7 @@ private:
                 << s3dmm::Vec3d{  5,  5,  5 };
         }
 
-        s3dmm::IndexCubeSplitter2<3> m_splitter;
+        s3dmm::IndexCubeSplitter<3> m_splitter;
     };
     std::vector<SortedBoxes> m_sortedBoxes;
     unsigned int m_splitCount{1};
