@@ -50,6 +50,15 @@ struct OpenRange : MultiIndex<2, T>
     void normalize() noexcept
     { *this = normalized(); }
 
+    T& origin() noexcept
+    { return (*this)[0]; }
+
+    const T& origin() const noexcept
+    { return (*this)[0]; }
+
+    T length() const noexcept
+    { return (*this)[1] - (*this)[0]; }
+
     bool operator==(const OpenRange& that) const noexcept
     {
         return empty()
