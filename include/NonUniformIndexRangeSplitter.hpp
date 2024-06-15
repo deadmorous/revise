@@ -63,6 +63,14 @@ public:
         return { {m_start_index, at}, at, {at+1, m_start_index+n} };
     }
 
+    IndexRange index_range() const noexcept
+    {
+        return {
+            m_start_index,
+            m_start_index + static_cast<unsigned int>(m_coords.size()) - 1u
+        };
+    }
+
 private:
     unsigned int m_start_index;
     std::vector<real_type> m_coords;
