@@ -399,7 +399,7 @@ void App_MyVolumeRaycast::setupVolume()
 
     // volume image field textue must be on sampler #0
     auto fieldTex = mVolTexData->fieldTexture();
-    volume_fx->shader()->gocTextureSampler(0)->setTexture(fieldTex);
+    volume_fx->shader()->gocTextureImageUnit(0)->setTexture(fieldTex);
     volume_fx->shader()->gocUniform("volume_texunit")->setUniformI(0);
     auto esize = static_cast<int>(mVolTexData->textureEdgeSize());
     mRaycastVolume->generateTextureCoordinates(ivec3(esize, esize, esize));
@@ -413,7 +413,7 @@ void App_MyVolumeRaycast::setupVolume()
         if (alphaTex)
         {
             // volume image alpha textue must be on sampler #2
-            volume_fx->shader()->gocTextureSampler(2)->setTexture(alphaTex);
+            volume_fx->shader()->gocTextureImageUnit(2)->setTexture(alphaTex);
             volume_fx->shader()
                 ->gocUniform("volume_alpha_texunit")
                 ->setUniformI(2);
@@ -441,7 +441,7 @@ void App_MyVolumeRaycast::setupVolume()
     trf_tex->getTexParameter()->setMagFilter(vl::TPF_LINEAR);
     trf_tex->getTexParameter()->setMinFilter(vl::TPF_LINEAR);
     trf_tex->getTexParameter()->setWrap(vl::TPW_CLAMP_TO_EDGE);
-    volume_fx->shader()->gocTextureSampler(1)->setTexture(trf_tex.get());
+    volume_fx->shader()->gocTextureImageUnit(1)->setTexture(trf_tex.get());
     volume_fx->shader()->gocUniform("trfunc_texunit")->setUniformI(1);
 
     // gradient computation, currently disabled

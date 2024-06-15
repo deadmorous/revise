@@ -5,11 +5,11 @@ project(${ProjectId})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt6 COMPONENTS Core REQUIRED)
 
 aux_source_directory(. SOURCE_FILES)
 
-find_package(VL COMPONENTS VLCore VLGraphics VLVG VLVolume VLMolecule VLQt5 REQUIRED)
+find_package(VL COMPONENTS VLCore VLGraphics VLVG VLVolume VLMolecule VLQt6 REQUIRED)
 include_directories(${VL_INCLUDE_DIRS})
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
@@ -33,7 +33,7 @@ target_link_libraries(${PROJECT_NAME}
     s3dmm
     tecplot_rw
     s3vs_worker
-    Qt5::Core
+    Qt6::Core
 )
 
 set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY

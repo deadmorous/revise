@@ -12,7 +12,7 @@
 
 #include <vlCore/FileSystem.hpp>
 #include <vlCore/VisualizationLibrary.hpp>
-#include <vlQt5/Qt5Widget.hpp>
+#include <vlQt6/Qt6Widget.hpp>
 
 #include "opengl/App_MyVolumeRaycast.hpp"
 
@@ -97,7 +97,7 @@ struct VlObjects
 {
     shared_ptr<VolumeTextureDataInterface> volTexData;
     vl::ref<App_MyVolumeRaycast> applet;
-    vl::ref<vlQt5::Qt5Widget> qt5_window;
+    vl::ref<vlQt6::Qt6Widget> qt6_window;
 };
 
 inline vl::fvec4 toColor(const string& color)
@@ -137,13 +137,13 @@ VlObjects initVisualization(const CommandLineParameters& param)
     result.applet = new App_MyVolumeRaycast(result.volTexData);
     result.applet->initialize();
     /* create a native Qt5 window */
-    result.qt5_window = new vlQt5::Qt5Widget;
+    result.qt6_window = new vlQt6::Qt6Widget;
     /* bind the applet so it receives all the GUI events related to the
      * OpenGLContext */
-    result.qt5_window->addEventListener(result.applet.get());
+    result.qt6_window->addEventListener(result.applet.get());
     /* target the window so we can render on it */
     result.applet->rendering()->as<Rendering>()->renderer()->setFramebuffer(
-        result.qt5_window->framebuffer());
+        result.qt6_window->framebuffer());
     /* black background */
     result.applet->rendering()
         ->as<Rendering>()
@@ -162,11 +162,11 @@ VlObjects initVisualization(const CommandLineParameters& param)
     int y = 10;
     int width = 512;
     int height = 512;
-    result.qt5_window->initQt5Widget(
-        "Volumetric data", format, nullptr, x, y, width, height);
+    result.qt6_window->initQt6Widget(
+        "Volumetric data", format, x, y, width, height);
 
     /* show the window */
-    result.qt5_window->show();
+    result.qt6_window->show();
     return result;
 }
 
@@ -279,7 +279,7 @@ int main(int argc, char* argv[])
 
         /* deallocate the window with all the OpenGL resources before shutting
          * down Visualization Library */
-        vlObjects.qt5_window = nullptr;
+        vlObjects.qt6_window = nullptr;
 
         /* shutdown Visualization Library */
         vl::VisualizationLibrary::shutdown();
