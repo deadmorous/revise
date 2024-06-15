@@ -58,7 +58,7 @@ concept IndexedBlocksType =
 
 
 template <IndexedBlocksType Blocks>
-class BackToFrontOrder
+class BackToFrontOrder final
 {
 public:
     using Block = typename Blocks::Block;
