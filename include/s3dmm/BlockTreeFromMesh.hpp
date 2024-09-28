@@ -88,7 +88,19 @@ public:
                 for (auto nodePos : zone.nodes()) {
                     vector_type r;
                     BOOST_ASSERT(nodePos.size() == N);
+
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+                    // NOTE: GCC 13.2.0 incorrectly warns that the copying
+                    // overflows destination container `r` in the case N=1,
+                    // but it does not realize it actually does not reach the
+                    // branch for which the warning is issued.
                     boost::range::copy(nodePos, &ScalarOrMultiIndex<N, real_type>::element(r, 0));
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
                     bb << r;
                 }
             }
