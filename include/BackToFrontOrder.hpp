@@ -27,6 +27,7 @@ along with this program.  If not, see https://www.gnu.org/licenses/agpl-3.0.en.h
 #include <boost/assert.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 
+#include <cstdint>
 #include <span>
 
 namespace s3dmm
